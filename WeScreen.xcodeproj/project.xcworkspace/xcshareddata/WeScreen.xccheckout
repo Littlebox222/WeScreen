@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>B9302386-82BB-4F02-AA17-E41D45C06002</string>
+	<key>IDESourceControlProjectName</key>
+	<string>WeScreen</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>4111446C85071A4BA83A262D7915FF07BAB1ED6D</key>
+		<string>https://github.com/Littlebox222/WeScreen.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>WeScreen.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>4111446C85071A4BA83A262D7915FF07BAB1ED6D</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/Littlebox222/WeScreen.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>4111446C85071A4BA83A262D7915FF07BAB1ED6D</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>4111446C85071A4BA83A262D7915FF07BAB1ED6D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>WeScreen</string>
+		</dict>
+	</array>
+</dict>
+</plist>

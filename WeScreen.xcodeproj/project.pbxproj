@@ -74,6 +74,10 @@
 		508FCA3F19EBBE7600D02AC4 /* SBJson4StreamWriterState.m in Sources */ = {isa = PBXBuildFile; fileRef = 508FCA3719EBBE7600D02AC4 /* SBJson4StreamWriterState.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		508FCA4019EBBE7600D02AC4 /* SBJson4Writer.m in Sources */ = {isa = PBXBuildFile; fileRef = 508FCA3919EBBE7600D02AC4 /* SBJson4Writer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		508FCA4419EBDF9C00D02AC4 /* UIPlaceHolderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 508FCA4319EBDF9C00D02AC4 /* UIPlaceHolderTextView.m */; };
+		C1FFB66019FE3DF7008374D4 /* ThreadView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FFB65F19FE3DF7008374D4 /* ThreadView.m */; };
+		C1FFB66219FE3E54008374D4 /* ThreadView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C1FFB66119FE3E54008374D4 /* ThreadView.xib */; };
+		C1FFB66619FE471D008374D4 /* ThreadViewCellTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FFB66419FE471D008374D4 /* ThreadViewCellTableViewCell.m */; };
+		C1FFB66719FE471D008374D4 /* ThreadViewCellTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C1FFB66519FE471D008374D4 /* ThreadViewCellTableViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -186,6 +190,12 @@
 		508FCA4119EBC1DC00D02AC4 /* Definition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Definition.h; sourceTree = "<group>"; };
 		508FCA4219EBDF9C00D02AC4 /* UIPlaceHolderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIPlaceHolderTextView.h; sourceTree = "<group>"; };
 		508FCA4319EBDF9C00D02AC4 /* UIPlaceHolderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPlaceHolderTextView.m; sourceTree = "<group>"; };
+		C1FFB65E19FE3DF6008374D4 /* ThreadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadView.h; sourceTree = "<group>"; };
+		C1FFB65F19FE3DF7008374D4 /* ThreadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadView.m; sourceTree = "<group>"; };
+		C1FFB66119FE3E54008374D4 /* ThreadView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreadView.xib; sourceTree = "<group>"; };
+		C1FFB66319FE471D008374D4 /* ThreadViewCellTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadViewCellTableViewCell.h; sourceTree = "<group>"; };
+		C1FFB66419FE471D008374D4 /* ThreadViewCellTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadViewCellTableViewCell.m; sourceTree = "<group>"; };
+		C1FFB66519FE471D008374D4 /* ThreadViewCellTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreadViewCellTableViewCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -292,7 +302,6 @@
 				500E8B2019DEF5CC000A7DCC /* category */,
 				500E8B5819DEF714000A7DCC /* model */,
 				500E8B2A19DEF5CC000A7DCC /* view */,
-				500E8B2519DEF5CC000A7DCC /* cell */,
 				500E8B3519DEF665000A7DCC /* images */,
 			);
 			path = chat;
@@ -316,8 +325,12 @@
 				500E8B2719DEF5CC000A7DCC /* ChartCell.m */,
 				500E8B2819DEF5CC000A7DCC /* ChartCellFrame.h */,
 				500E8B2919DEF5CC000A7DCC /* ChartCellFrame.m */,
+				C1FFB66319FE471D008374D4 /* ThreadViewCellTableViewCell.h */,
+				C1FFB66419FE471D008374D4 /* ThreadViewCellTableViewCell.m */,
+				C1FFB66519FE471D008374D4 /* ThreadViewCellTableViewCell.xib */,
 			);
-			path = cell;
+			name = cell;
+			path = ../cell;
 			sourceTree = "<group>";
 		};
 		500E8B2A19DEF5CC000A7DCC /* view */ = {
@@ -327,6 +340,10 @@
 				500E8B2C19DEF5CC000A7DCC /* ChartContentView.m */,
 				500E8B2D19DEF5CC000A7DCC /* KeyBordVIew.h */,
 				500E8B2E19DEF5CC000A7DCC /* KeyBordVIew.m */,
+				C1FFB65E19FE3DF6008374D4 /* ThreadView.h */,
+				C1FFB65F19FE3DF7008374D4 /* ThreadView.m */,
+				C1FFB66119FE3E54008374D4 /* ThreadView.xib */,
+				500E8B2519DEF5CC000A7DCC /* cell */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -535,6 +552,8 @@
 				5083332A19E95692005D97A7 /* chat_bottom_up_nor.png in Resources */,
 				500E8B4C19DEF665000A7DCC /* chat_bottom_textfield.png in Resources */,
 				500E8B5619DEF665000A7DCC /* icon02.jpg in Resources */,
+				C1FFB66719FE471D008374D4 /* ThreadViewCellTableViewCell.xib in Resources */,
+				C1FFB66219FE3E54008374D4 /* ThreadView.xib in Resources */,
 				5083332419E95410005D97A7 /* chat_bottom_voice_nor.png in Resources */,
 				508FCA0C19EAFB0100D02AC4 /* timeline_tracker.png in Resources */,
 				500E8B4B19DEF665000A7DCC /* chat_bottom_smile_press.png in Resources */,
@@ -590,8 +609,10 @@
 				508FCA3F19EBBE7600D02AC4 /* SBJson4StreamWriterState.m in Sources */,
 				500E8B2F19DEF5CC000A7DCC /* NSString+DocumentPath.m in Sources */,
 				5083331F19E93E92005D97A7 /* PopoverView.m in Sources */,
+				C1FFB66619FE471D008374D4 /* ThreadViewCellTableViewCell.m in Sources */,
 				500E8AEE19DEE4E0000A7DCC /* main.m in Sources */,
 				508FCA3E19EBBE7600D02AC4 /* SBJson4StreamWriter.m in Sources */,
+				C1FFB66019FE3DF7008374D4 /* ThreadView.m in Sources */,
 				500E8B3219DEF5CC000A7DCC /* ChartCellFrame.m in Sources */,
 				500E8B1B19DEE731000A7DCC /* RootViewController.m in Sources */,
 				508FCA3C19EBBE7600D02AC4 /* SBJson4StreamParserState.m in Sources */,
