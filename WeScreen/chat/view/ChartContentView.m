@@ -48,7 +48,7 @@
 }
 -(void)longTap:(UILongPressGestureRecognizer *)longTap
 {
-    if([self.delegate respondsToSelector:@selector(chartContentViewLongPress:content:)]){
+    if(longTap.state == UIGestureRecognizerStateBegan && [self.delegate respondsToSelector:@selector(chartContentViewLongPress:content:)]){
         
         [self.delegate chartContentViewLongPress:self content:self.contentLabel.text];
     }

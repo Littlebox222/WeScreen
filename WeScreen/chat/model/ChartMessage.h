@@ -19,4 +19,5 @@ typedef enum {
 //@property (nonatomic, copy) NSString *time;
 @property (nonatomic, copy) NSString *content;
 @property (nonatomic, copy) NSDictionary *dict;
+@property (nonatomic, copy) NSString *name;//用户昵称
 @end

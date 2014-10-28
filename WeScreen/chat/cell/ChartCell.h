@@ -11,7 +11,7 @@
 
 @protocol ChartCellDelegate <NSObject>
 
-- (void)chartCell:(ChartCell *)chartCell tapContent:(NSString *)content;
+- (void)chartCell:(ChartCell *)chartCell tapType:(NSString *)tapType;
 
 @end
 

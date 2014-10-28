@@ -29,6 +29,8 @@
 #import "iflyMSC/IFlyResourceUtil.h"
 #import "RecognizerFactory.h"
 
+#import "ThreadView.h"
+
 @class IFlyDataUploader;
 @class IFlySpeechRecognizer;
 
@@ -50,6 +52,7 @@ static NSString *const cellIdentifier=@"QQChart";
 @property (nonatomic, strong) IFlyDataUploader     * uploader;
 @property (nonatomic, strong) NSString             * iSRResult;
 
+@property (nonatomic, strong) ThreadView *threadView;//查看对话view
 @property (strong, nonatomic) NSLayoutConstraint *keyBordViewConstraintHeight;
 @property (assign, nonatomic) CGRect keyEndFrame;
 @end
@@ -75,6 +78,8 @@ static NSString *const cellIdentifier=@"QQChart";
     [_fileName release];
     [_rightButton release];
     [_navMenuButton release];
+    
+    self.threadView = nil;
     
     [super dealloc];
 }
@@ -175,7 +180,7 @@ static NSString *const cellIdentifier=@"QQChart";
     
     //add UItableView
     self.tableView=[[[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width-20, self.view.frame.size.height-44) style:UITableViewStylePlain] autorelease];
-    [self.tableView registerClass:[ChartCell class] forCellReuseIdentifier:cellIdentifier];
+//    [self.tableView registerClass:[ChartCell class] forCellReuseIdentifier:cellIdentifier];
     self.tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.tableView.allowsSelection = NO;
     self.tableView.backgroundColor=[UIColor colorWithRed:232.0/255 green:232.0/255 blue:232.0/255 alpha:1];
@@ -300,9 +305,81 @@ static NSString *const cellIdentifier=@"QQChart";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
-- (void)chartCell:(ChartCell *)chartCell tapContent:(NSString *)content
+- (void)chartCell:(ChartCell *)chartCell tapType:(NSString *)tapType;
+{    
+    if ([tapType isEqualToString:@"atTa"]) {
+        self.keyBordView.textField.text = [NSString stringWithFormat:@"@%@",chartCell.cellFrame.chartMessage.name];
+    }else if ([tapType isEqualToString:@"copy"]) {
+        self.keyBordView.textField.text = chartCell.cellFrame.chartMessage.content;
+    }else if ([tapType isEqualToString:@"back"]) {
+        self.keyBordView.textField.text = [NSString stringWithFormat:@"回复%@:",chartCell.cellFrame.chartMessage.name];
+    }else if ([tapType isEqualToString:@"viewThread"]) {
+        if (self.threadView) {
+            [self.threadView removeFromSuperview];
+            self.threadView = nil;
+        }
+        
+        self.threadView = [[[NSBundle mainBundle] loadNibNamed:@"ThreadView" owner:self
+                                                      options:nil] objectAtIndex:0];
+        [self.threadView.cancelBtn addTarget:self action:@selector(cancelThreadViewBtnAction:)
+                            forControlEvents:UIControlEventTouchUpInside];
+        //TODO:假数据
+        NSMutableArray *dataArray = [NSMutableArray array];
+        ChartMessage *cm = [[[ChartMessage alloc] init] autorelease];
+        cm.icon = @"icon01.jpg";
+        cm.name = @"里欧姆";
+        cm.content = @"阿拉斯加地方垃圾是地方了几点睡了；房间";
+        [dataArray addObject:cm];
+        cm = [[[ChartMessage alloc] init] autorelease];
+        cm.icon = @"icon01.jpg";
+        cm.name = @"里欧姆";
+        cm.content = @"啊水电费的萨芬啥的发大水发大水";
+        [dataArray addObject:cm];
+        cm = [[[ChartMessage alloc] init] autorelease];
+        cm.icon = @"icon02.jpg";
+        cm.name = @"天天甜甜";
+        cm.content = @"而沿途有意u";
+        [dataArray addObject:cm];
+        cm = [[[ChartMessage alloc] init] autorelease];
+        cm.icon = @"icon01.jpg";
+        cm.name = @"里欧姆";
+        cm.content = @"在新车先不买男变女没发育和";
+        [dataArray addObject:cm];
+        cm = [[[ChartMessage alloc] init] autorelease];
+        cm.icon = @"icon02.jpg";
+        cm.name = @"天天甜甜";
+        cm.content = @"固原卡号给卡号给客户将客户";
+        [dataArray addObject:cm];
+        cm = [[[ChartMessage alloc] init] autorelease];
+        cm.icon = @"icon02.jpg";
+        cm.name = @"天天甜甜";
+        cm.content = @"不v体育i";
+        [dataArray addObject:cm];
+        cm = [[[ChartMessage alloc] init] autorelease];
+        cm.icon = @"icon01.jpg";
+        cm.name = @"里欧姆";
+        cm.content = @"擦擦擦不能那个和更大的:";
+        [dataArray addObject:cm];
+        
+        self.threadView.dataArray = dataArray;
+        [self.navigationController.view addSubview:self.threadView];
+        
+    }else if ([tapType isEqualToString:@"jubao"]) {
+        //TODO:举报
+    } if ([tapType isEqualToString:@"delete"]) {
+        [self.tableView beginUpdates];
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:chartCell];
+        [self.cellFrames removeObjectAtIndex:indexPath.row];
+        //TODO:访问删除接口
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+    }
+}
+
+-(void)cancelThreadViewBtnAction:(id)sender
 {
-    
+    [self.threadView removeFromSuperview];
+    self.threadView = nil;
 }
 
 #pragma mark - KeyBordView

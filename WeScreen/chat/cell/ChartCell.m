@@ -103,21 +103,76 @@
 {
     [self becomeFirstResponder];
     UIMenuController *menu=[UIMenuController sharedMenuController];
+    if (self.cellFrame.chartMessage.messageType == kMessageFrom){
+        //自定义UIMenuItem，@Ta、复制、回复、查看对话、举报
+        UIMenuItem *itemAt = [[UIMenuItem alloc] initWithTitle:@"@Ta" action:@selector(atTaAction:)];
+        UIMenuItem *itemCopy = [[UIMenuItem alloc] initWithTitle:@"复制" action:@selector(copyAction:)];
+        UIMenuItem *itemBack = [[UIMenuItem alloc] initWithTitle:@"回复" action:@selector(backAction:)];
+        UIMenuItem *itemViewThread = [[UIMenuItem alloc] initWithTitle:@"查看对话" action:@selector(viewThreadAction:)];
+        UIMenuItem *itemJubao = [[UIMenuItem alloc] initWithTitle:@"举报" action:@selector(jubaoAction:)];
+        menu.menuItems = [NSArray arrayWithObjects:itemAt,itemCopy,itemBack,itemViewThread,itemJubao, nil];
+    }else{
+        //自定义UIMenuItem，@Ta、复制、回复、查看对话、举报
+        UIMenuItem *itemDelete = [[UIMenuItem alloc] initWithTitle:@"删除" action:@selector(deleteAction:)];
+        menu.menuItems = [NSArray arrayWithObjects:itemDelete, nil];
+    }
+    
     [menu setTargetRect:self.bounds inView:self];
     [menu setMenuVisible:YES animated:YES];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuShow:) name:UIMenuControllerWillShowMenuNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuHide:) name:UIMenuControllerWillHideMenuNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuHide:) name:UIMenuControllerWillHideMenuNotification object:nil];
     self.contentStr=content;
     self.currentChartView=chartView;
 }
--(void)chartContentViewTapPress:(ChartContentView *)chartView content:(NSString *)content
+
+-(BOOL)canBecomeFirstResponder
 {
-    if([self.delegate respondsToSelector:@selector(chartCell:tapContent:)]){
-    
-    
-        [self.delegate chartCell:self tapContent:content];
-    }
+    return YES;
 }
+-(BOOL)canPerformAction:(SEL)action withSender:(id)sender
+{
+    if (action == @selector(atTaAction:) ||
+        action == @selector(copyAction:) ||
+        action == @selector(backAction:) ||
+        action == @selector(viewThreadAction:) ||
+        action == @selector(deleteAction:) ||
+        action == @selector(jubaoAction:)
+        )
+    {
+        return YES;
+    }
+    return [super canPerformAction:action withSender:sender];
+}
+
+-(void)atTaAction:(id)sender{
+    [self.delegate chartCell:self tapType:@"atTa"];
+}
+
+-(void)copyAction:(id)sender{
+    [self.delegate chartCell:self tapType:@"copy"];
+}
+-(void)backAction:(id)sender{
+    [self.delegate chartCell:self tapType:@"back"];
+}
+-(void)viewThreadAction:(id)sender{
+    [self.delegate chartCell:self tapType:@"viewThread"];
+}
+-(void)jubaoAction:(id)sender{
+    [self.delegate chartCell:self tapType:@"jubao"];
+}
+-(void)deleteAction:(id)sender{
+    [self.delegate chartCell:self tapType:@"delete"];
+}
+
+//-(void)chartContentViewTapPress:(ChartContentView *)chartView content:(NSString *)content
+//{
+//    if([self.delegate respondsToSelector:@selector(chartCell:tapContent:)]){
+//    
+//    
+//        [self.delegate chartCell:self tapContent:content];
+//    }
+//}
 -(void)menuShow:(UIMenuController *)menu
 {
     //[self setBackGroundImageViewImage:self.currentChartView from:@"chatfrom_bg_focused.png" to:@"chatto_bg_focused.png"];
@@ -128,23 +183,7 @@
     self.currentChartView=nil;
     [self resignFirstResponder];
 }
--(BOOL)canPerformAction:(SEL)action withSender:(id)sender
-{
-    if(action ==@selector(copy:)){
 
-        return YES;
-    }
-    return [super canPerformAction:action withSender:sender];
-}
-
--(void)copy:(id)sender
-{
-    [[UIPasteboard generalPasteboard]setString:self.contentStr];
-}
--(BOOL)canBecomeFirstResponder
-{
-    return YES;
-}
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
