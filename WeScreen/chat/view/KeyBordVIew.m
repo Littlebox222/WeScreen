@@ -22,6 +22,7 @@
 @property (nonatomic) CGSize currentContentSize;
 @property (nonatomic) CGRect origionFrameBack;
 @property (nonatomic) CGRect origionFrameText;
+@property (strong, nonatomic) ContentSizeBlock sizeBlock;
 @end
 
 @implementation KeyBordVIew
@@ -32,8 +33,11 @@
     if (self) {
         // Initialization code
         [self initialData];
-        
+        [self addConstraint];
         _aa = 33;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(keyPressed:) name: UITextViewTextDidChangeNotification object: nil];
+        self.textField.scrollEnabled = NO;
     }
     return self;
 }
@@ -49,106 +53,147 @@
 -(void)initialData
 {
     //工具条
-    self.backImageView=[[UIImageView alloc]initWithFrame:self.bounds];
-    self.backImageView.image=[UIImage strethImageWith:@"toolbar_bottom_bar.png"];
-    UIImage *img = nil;
-    CGRect rect = CGRectMake(0, 0, self.backImageView.image.size.width, self.backImageView.image.size.height);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1].CGColor);
-    CGContextFillRect(context, rect);
-    img = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    self.backImageView.image = img;
-    [self addSubview:self.backImageView];
+    [self setBackgroundColor:[UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1]];
     
     //麦克风
     self.voiceBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.voiceBtn setFrame:CGRectMake(0, 0, self.frame.size.height+5, self.frame.size.height)];
+    [self.voiceBtn setFrame:CGRectZero];
     [self.voiceBtn setImage:[UIImage imageNamed:@"chat_bottom_voice_nor.png"] forState:UIControlStateNormal];
-    [self.voiceBtn setImageEdgeInsets:UIEdgeInsetsMake(8, 10, 8, 10)];
-//    [self.voiceBtn addTarget:self action:@selector(touchDown:) forControlEvents:UIControlEventTouchDown];
-    [self.voiceBtn addTarget:self action:@selector(swipeCancel:) forControlEvents:UIControlEventTouchDragExit];
-    [self.voiceBtn addTarget:self action:@selector(aaa) forControlEvents:UIControlEventTouchUpInside];
+    [self.voiceBtn addTarget:self action:@selector(voiceBtnTapped) forControlEvents:UIControlEventTouchUpInside];
     
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
-//    longPress.minimumPressDuration = 1.5;
+    longPress.minimumPressDuration = 0.2;
     [self.voiceBtn addGestureRecognizer:longPress];
-    
     [self addSubview:self.voiceBtn];
     
     //输入框
-    self.textField = [[UIPlaceHolderTextView alloc] initWithFrame:CGRectMake(0, 0, 180, self.frame.size.height*0.8)];
-    self.textField.center = CGPointMake(145, self.frame.size.height*0.5);
+    self.textField = [[UIPlaceHolderTextView alloc] initWithFrame:CGRectZero];
     self.textField.placeholder = @"按住麦克风，语音输入文字";
     self.textField.delegate = self;
+//    self.textField
     [self addSubview:self.textField];
     
     //表情
     self.imageBtn=[self buttonWith:@"chat_bottom_smile_nor.png" hightLight:@"chat_bottom_smile_nor.png" action:@selector(imageBtnPress:)];
-    [self.imageBtn setFrame:CGRectMake(0, 0, 27, 27)];
-    [self.imageBtn setCenter:CGPointMake(260, self.frame.size.height*0.5)];
+    [self.imageBtn setFrame:CGRectZero];
     [self addSubview:self.imageBtn];
     
     //更多
     self.addBtn=[self buttonWith:@"chat_bottom_up_nor.png" hightLight:@"chat_bottom_up_nor.png" action:@selector(addBtnPress:)];
-    [self.addBtn setFrame:CGRectMake(0, 0, 27, 27)];
-    [self.addBtn setCenter:CGPointMake(295, self.frame.size.height*0.5)];
+    [self.addBtn setFrame:CGRectZero];
     [self addSubview:self.addBtn];
 }
 
-- (void)aaa {
-    NSLog(@"upOutSide");
-}
 
--(void)handleLongPressGestures:(UILongPressGestureRecognizer *)paramSender{
-    
-    if (paramSender.state == UIGestureRecognizerStateChanged) {
-        NSLog(@"chchchchcch");
-    }
-    
-    if (paramSender.state == UIGestureRecognizerStateBegan){
-        NSLog(@"Long PressGesture");
-        [self.delegate beginRecord];
-    }else if (paramSender.state == UIGestureRecognizerStateEnded) {
-        NSLog(@"Long PressGesture End");
-    }
-}
-
--(void)touchDown:(UIButton *)voice
+- (void)addConstraint
 {
-    //开始录音
-    NSLog(@"down");
-    return;
+    //给voicebutton添加约束
+    self.voiceBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *voiceConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[_voiceBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
+    [self addConstraints:voiceConstraintH];
+    NSArray *voiceConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_voiceBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
+    [self addConstraints:voiceConstraintV];
     
-    if([self.delegate respondsToSelector:@selector(beginRecord)]){
-        [self.delegate beginRecord];
-    }
-    NSLog(@"开始录音");
+    
+    //给MoreButton添加约束
+    self.addBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *moreButtonH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_addBtn(27)]-8-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_addBtn)];
+    [self addConstraints:moreButtonH];
+    NSArray *moreButtonV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_addBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_addBtn)];
+    [self addConstraints:moreButtonV];
+
+    //给imageButton添加约束
+    self.imageBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *imageButtonH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_imageBtn(27)]-45-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_imageBtn)];
+    [self addConstraints:imageButtonH];
+    NSArray *imageButtonV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_imageBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_imageBtn)];
+    [self addConstraints:imageButtonV];
+    
+    //给文本框添加约束
+    self.textField.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *sendTextViewConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-45-[_textField]-80-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_textField)];
+    [self addConstraints:sendTextViewConstraintH];
+    NSArray *sendTextViewConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[_textField]-5-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_textField)];
+    [self addConstraints:sendTextViewConstraintV];
 }
 
--(void)touchUp:(UIButton *)voice
-{
-    //开始录音
-    NSLog(@"touch cancel");
-    return;
+- (void)voiceBtnTapped {
     
-    if([self.delegate respondsToSelector:@selector(finishRecord)]){
-        [self.delegate finishRecord];
-    }
-    NSLog(@"结束录音");
+    NSLog(@"voice button tapped");
+    UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:@"按住语音输入" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles: nil];
+    [alter show];
 }
 
--(void)swipeCancel:(UIButton *)voice
-{
-    NSLog(@"drag out");
-    return;
+-(void)handleLongPressGestures:(UILongPressGestureRecognizer *)sender{
     
-    if([self.delegate respondsToSelector:@selector(cancelRecord)]){
-        [self.delegate cancelRecord];
+    static int i = 1;
+    static double iTime = 0;
+    if ([sender isKindOfClass:[UILongPressGestureRecognizer class]]) {
+        
+        UILongPressGestureRecognizer * longPress = sender;
+        
+        //录音开始
+        if (longPress.state == UIGestureRecognizerStateBegan) {
+            
+            i = 1;
+            
+            if (self.delegate && [self.delegate respondsToSelector:@selector(beginRecord)]) {
+                
+                iTime = [[NSDate date] timeIntervalSince1970];
+                [self.delegate beginRecord];
+            }
+            
+            //TODO:界面切换
+        }
+        
+        
+        //取消录音
+        if (longPress.state == UIGestureRecognizerStateChanged) {
+            
+            CGPoint piont = [longPress locationInView:self];
+            NSLog(@"%f",piont.x);
+            
+            if (piont.x > 40) {
+                
+                if (i == 1) {
+                    
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(cancelRecord)]) {
+                        [self.delegate cancelRecord];
+                    }
+                    
+                    //TODO:界面切换
+                    i = 0;
+                }
+            }
+        }
+        
+        if (longPress.state == UIGestureRecognizerStateEnded) {
+            
+            if (i == 1) {
+                
+                NSLog(@"录音结束");
+                
+                //TODO:界面切换
+                double cTime = [[NSDate date] timeIntervalSince1970];
+                
+                if (cTime - iTime > 1) {
+                    
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(finishRecord)]) {
+                        [self.delegate finishRecord];
+                    }
+                    
+                }else {
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(cancelRecord)]) {
+                        [self.delegate cancelRecord];
+                    }
+                    UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:@"录音时间太短！" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles: nil];
+                    [alter show];
+                }
+            }
+        }
     }
-    NSLog(@"结束录音");
 }
+
 -(void)imageBtnPress:(UIButton *)image
 {
     
@@ -180,6 +225,27 @@
         if([self.delegate respondsToSelector:@selector(KeyBordView:textFiledReturn:)]){
             
             [self.delegate KeyBordView:self textFiledReturn:textView];
+            
+            NSString *tmp = @"测试";
+            CGFloat tmpHeight = [tmp sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999) lineBreakMode:UILineBreakModeWordWrap].height;
+            
+            
+            CGSize newSize = [self.textField.text sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999) lineBreakMode:UILineBreakModeWordWrap];
+            NSInteger lineNum = newSize.height / tmpHeight;
+            NSInteger newSizeH = newSize.height;
+            NSInteger newSizeW = newSize.width;
+            
+            
+            CGSize contentSize = CGSizeMake(self.textField.frame.size.width-5, 44);
+            if (lineNum > 1) {
+                contentSize.height = lineNum*tmpHeight+44-tmpHeight;
+            }
+            
+            self.sizeBlock(contentSize);
+            
+            [self.textField setScrollEnabled:YES];
+            [self.textField scrollRectToVisible:CGRectMake(0, 0, 1, contentSize.height+16) animated:NO];
+            
             return NO;
         }
     }
@@ -189,39 +255,37 @@
 
 - (void)textViewDidChange:(UITextView *)textView
 {
+
+}
+
+-(void)setContentSizeBlock:(ContentSizeBlock)block
+{
+    self.sizeBlock = block;
+}
+
+
+-(void) keyPressed: (NSNotification*) notification{
+    // get the size of the text block so we can work our magic
+    NSString *tmp = @"测试";
+    CGFloat tmpHeight = [tmp sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999) lineBreakMode:UILineBreakModeWordWrap].height;
     
-//    NSLog(@"~~~~~%ld", [textView.text length]);
-//    NSLog(@"-----%f", self.textField.contentSize.height);
-//    NSLog(@"frame.size.width  : %f", self.textField.frame.size.width);
-//    NSLog(@"contentSize.width : %f", self.textField.contentSize.width);
-//    NSLog(@"contentOffSet.x : %f", self.textField.contentOffset.x);
-//    NSLog(@"contentOffSet.y : %f", self.textField.contentOffset.y);
     
-    /*
-    if (_aa != self.textField.contentSize.height) {
-        
-        if (self.textField.contentSize.height < 70) {
-            int value = 17;
-            float heightToFit = self.textField.contentSize.height - _aa;
-            heightToFit  = heightToFit > value ? value : heightToFit;
-            heightToFit  = heightToFit <- value ? -value : heightToFit;
-            self.bb = heightToFit;
-            _aa = self.textField.contentSize.height;
-            
-            [UIView animateWithDuration:0.3f animations:^{
-                self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - heightToFit, self.frame.size.width, self.frame.size.height + heightToFit);
-                self.textField.frame = CGRectMake(self.textField.frame.origin.x, self.textField.frame.origin.y, self.textField.frame.size.width, self.textField.frame.size.height+heightToFit);
-                self.backImageView.frame = self.bounds;
-            }];
-            
-            [self.delegate updateView:self];
+    CGSize newSize = [self.textField.text sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999) lineBreakMode:UILineBreakModeWordWrap];
+    NSInteger lineNum = newSize.height / tmpHeight;
+    NSInteger newSizeH = newSize.height;
+    NSInteger newSizeW = newSize.width;
+//    NSLog(@"NEW SIZE : %ld X %ld", newSizeW, newSizeH);
+    if (self.textField.hasText && newSize.height < 60) {
+        CGSize contentSize = CGSizeMake(self.textField.frame.size.width-5, 44);
+        if (lineNum > 1) {
+            contentSize.height = lineNum*tmpHeight+44-tmpHeight;
         }
+
+        self.sizeBlock(contentSize);
         
-        //[textView scrollRangeToVisible:NSMakeRange([textView.text length], 0)];
-        CGPoint bottomOffset = CGPointMake(0, self.textField.contentSize.height - self.textField.bounds.size.height);
-        [textView setContentOffset:bottomOffset animated:YES];
+        [self.textField setScrollEnabled:YES];
+        [self.textField scrollRectToVisible:CGRectMake(0, 0, 1, contentSize.height+16) animated:NO];
     }
-     */
 }
 
 @end

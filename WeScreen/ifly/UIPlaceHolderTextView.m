@@ -62,7 +62,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textChanged:) name:UITextViewTextDidChangeNotification object:nil];
         
         self.returnKeyType = UIReturnKeySend;
-        self.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+        self.font = [UIFont systemFontOfSize:14];//[UIFont fontWithName:@"HelveticaNeue" size:14];
 
         [self.layer setBorderColor:[[[UIColor lightGrayColor] colorWithAlphaComponent:0.5] CGColor]];
         [self.layer setBorderWidth:1.0];

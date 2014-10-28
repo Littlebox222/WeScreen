@@ -49,6 +49,9 @@ static NSString *const cellIdentifier=@"QQChart";
 @property (nonatomic, strong) IFlySpeechRecognizer * iFlySpeechRecognizer;
 @property (nonatomic, strong) IFlyDataUploader     * uploader;
 @property (nonatomic, strong) NSString             * iSRResult;
+
+@property (strong, nonatomic) NSLayoutConstraint *keyBordViewConstraintHeight;
+@property (assign, nonatomic) CGRect keyEndFrame;
 @end
 
 @implementation MainViewController
@@ -117,6 +120,30 @@ static NSString *const cellIdentifier=@"QQChart";
     }];
 }
 
+//键盘出来的时候调整tooView的位置
+-(void) keyChange:(NSNotification *) notify
+{
+    NSDictionary *dic = notify.userInfo;
+    
+    CGRect endKey = [dic[@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
+    CGRect endKeySwap = [self.view convertRect:endKey fromView:self.view.window];
+    self.keyEndFrame = endKeySwap;
+    
+    
+    //运动时间
+    [UIView animateWithDuration:[dic[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
+        
+        CGRect frame = self.view.frame;
+        frame.size.height = endKeySwap.origin.y;
+        NSLog(@"%@",[NSValue valueWithCGRect:endKeySwap]);
+        
+        self.view.frame = frame;
+        self.keyBordView.frame = frame;
+        
+        [self tableViewScrollCurrentIndexPath];
+    }];
+}
+
 #pragma mark - Basic use for the info panel
 
 - (void)viewDidLoad {
@@ -124,6 +151,8 @@ static NSString *const cellIdentifier=@"QQChart";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
     self.navMenuButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.navMenuButton setFrame:CGRectMake(0, 0, 100, 42)];
@@ -172,13 +201,24 @@ static NSString *const cellIdentifier=@"QQChart";
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
     //
-    self.keyBordView = [[[KeyBordVIew alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height-44, self.view.frame.size.width, 44)] autorelease];
+    _keyBordView = [[KeyBordVIew alloc]initWithFrame:CGRectZero];
     self.keyBordView.delegate = self;
-    [self.view addSubview:self.keyBordView];
-    
+    [self.view addSubview:[self.keyBordView autorelease]];
+    _keyBordView.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *toolViewContraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_keyBordView]|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:NSDictionaryOfVariableBindings(_keyBordView)];
+    [self.view addConstraints:toolViewContraintH];
+    NSArray * tooViewConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_keyBordView(44)]|"
+                                                                           options:0
+                                                                           metrics:0
+                                                                             views:NSDictionaryOfVariableBindings(_keyBordView)];
+    [self.view addConstraints:tooViewConstraintV];
+    self.keyBordViewConstraintHeight = tooViewConstraintV[0];
     
     //
-    self.verticalScrollBar = [[[WKVerticalScrollBar alloc] initWithFrame:CGRectMake(self.view.frame.size.width-14, 85, 8, 416)] autorelease];
+    self.verticalScrollBar = [[[WKVerticalScrollBar alloc] initWithFrame:CGRectMake(self.view.frame.size.width-14, 85, 8, self.view.frame.size.height - 152)] autorelease];
     [_verticalScrollBar setScrollView:self.tableView];
     [self.view addSubview:_verticalScrollBar];
     
@@ -194,6 +234,8 @@ static NSString *const cellIdentifier=@"QQChart";
     //
     _iFlySpeechRecognizer = [RecognizerFactory CreateRecognizer:self Domain:@"iat"];
     self.uploader = [[[IFlyDataUploader alloc] init] autorelease];
+    
+    [self setKeyBordViewBlock];
 }
 
 -(void)initwithData
@@ -265,6 +307,40 @@ static NSString *const cellIdentifier=@"QQChart";
 
 #pragma mark - KeyBordView
 
+-(void)setKeyBordViewBlock
+{
+    __weak __block MainViewController *copy_self = self;
+    
+    [self.keyBordView setContentSizeBlock:^(CGSize contentSize) {
+        [copy_self updateHeight:contentSize];
+    }];
+}
+
+//更新约束
+-(void)updateHeight:(CGSize)contentSize
+{
+    int updateTableView = 0;
+    float height = contentSize.height;
+
+    [self.view removeConstraint:self.keyBordViewConstraintHeight];
+    NSString *string = [NSString stringWithFormat:@"V:[_keyBordView(%f)]", height];
+    NSArray * tooViewConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:string options:0 metrics:0 views:NSDictionaryOfVariableBindings(_keyBordView)];
+    
+    if (self.keyBordViewConstraintHeight != tooViewConstraintV[0]) {
+        updateTableView = 1;
+    }
+    
+    self.keyBordViewConstraintHeight = tooViewConstraintV[0];
+    [self.view addConstraint:self.keyBordViewConstraintHeight];
+    
+    if (updateTableView == 1) {
+        self.tableView.frame = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width, self.view.frame.size.height - height);
+        [self tableViewScrollCurrentIndexPath];
+        
+        self.verticalScrollBar.frame = CGRectMake(self.verticalScrollBar.frame.origin.x, self.verticalScrollBar.frame.origin.y, self.verticalScrollBar.frame.size.width, self.view.frame.size.height-108-height);
+    }
+}
+
 -(void)updateView:(KeyBordVIew *)keyboardView {
     
     [UIView animateWithDuration:0.3 animations:^{
@@ -333,7 +409,6 @@ static NSString *const cellIdentifier=@"QQChart";
 - (void)finishRecord
 {
     [_iFlySpeechRecognizer stopListening];
-    NSLog(@"aaa");
 }
 
 #pragma mark - IFlySpeechRecognizerDelegate

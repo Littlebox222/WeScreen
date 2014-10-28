@@ -21,9 +21,15 @@
 -(void)updateView:(KeyBordVIew *)keyboardView;
 @end
 
+
+typedef void (^ContentSizeBlock)(CGSize contentSize);
+
 @interface KeyBordVIew : UIView
 @property (nonatomic,assign) id<KeyBordVIewDelegate>delegate;
 @property (nonatomic,strong) UIPlaceHolderTextView *textField;
 @property (nonatomic) CGRect origionFrameSelf;
 @property (nonatomic) float bb;
+
+-(void)setContentSizeBlock:(ContentSizeBlock) block;
+
 @end
