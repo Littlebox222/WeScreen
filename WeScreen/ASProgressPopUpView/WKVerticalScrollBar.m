@@ -41,12 +41,17 @@
 {
     if ((self = [super initWithFrame:frame])) {
         
-        UIGraphicsBeginImageContext(self.frame.size);
-        [[UIImage imageNamed:@"timeline_process.png"] drawInRect:self.bounds];
-        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        [self setBackgroundColor:[UIColor colorWithPatternImage:image]];
-
+//        UIGraphicsBeginImageContext(self.frame.size);
+//        [[UIImage imageNamed:@"timeline_process.png"] drawInRect:self.bounds];
+//        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+//        UIGraphicsEndImageContext();
+//        [self setBackgroundColor:[UIColor colorWithPatternImage:image]];
+        
+//        self.backgroundColor = [UIColor redColor];
+        UIImageView *bgView = [[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 8, self.frame.size.height)] autorelease];
+        [bgView setImage:[UIImage imageNamed:@"timeline_process.png"]];
+        [self setBackgroundImageView:bgView];
+        [self addSubview:self.backgroundImageView];
         
         _handleWidth = 8.0f;
         _handleSelectedWidth = 15.0f;
@@ -66,13 +71,19 @@
         [handle setAnchorPoint:CGPointMake(1.0f, 0.0f)];
         [handle setFrame:CGRectMake(0, 0, _handleWidth, 0)];
         
-        UIGraphicsBeginImageContext(self.frame.size);
-        [[UIImage imageNamed:@"timeline_tracker.png"] drawInRect:self.bounds];
-        image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
+        self.trackerView = [[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 8, 1)] autorelease];
+        UIImage *image = [UIImage imageNamed:@"timeline_tracker.png"];
+        image = [image stretchableImageWithLeftCapWidth:0 topCapHeight:image.size.height-20];
+        [self.trackerView setImage:image];
+        [self addSubview:self.trackerView];
         
-        [handle setBackgroundColor:[[UIColor colorWithPatternImage:image] CGColor]];
-        [[self layer] addSublayer:handle];
+//        UIGraphicsBeginImageContext(self.frame.size);
+//        [[UIImage imageNamed:@"timeline_tracker.png"] drawInRect:self.bounds];
+//        image = UIGraphicsGetImageFromCurrentImageContext();
+//        UIGraphicsEndImageContext();
+//        
+//        [handle setBackgroundColor:[[UIColor colorWithPatternImage:image] CGColor]];
+//        [[self layer] addSublayer:handle];
     }
     return self;
 }
@@ -207,6 +218,13 @@
     [CATransaction commit];
     
     [self growHandle];
+    
+    [CATransaction begin];
+    [CATransaction setAnimationDuration:0.3f];
+    [self.trackerView setFrame:CGRectMake(0, 0, 8, handleY+handleHeight)];
+    [CATransaction commit];
+    
+    NSLog(@"%f", self.trackerView.frame.size.height);
 }
 
 - (BOOL)handleVisible
@@ -216,6 +234,12 @@
 
 - (void)growHandle
 {
+    
+    
+    
+    /*
+    
+    
     if (![self handleVisible]) {
         return;
     }
@@ -233,7 +257,7 @@
     [handle setBackgroundColor:[[UIColor colorWithPatternImage:image] CGColor]];
     
     [CATransaction commit];
-    
+    */
 //    [UIView animateWithDuration:0.3f animations:^{
 //        [_handleAccessoryView setAlpha:1.0f];
 //    }];

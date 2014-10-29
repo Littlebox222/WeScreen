@@ -12,20 +12,33 @@
 #import "UIImage+StrethImage.h"
 
 @interface KeyBordVIew()<UITextViewDelegate> {
-    float _aa;
 }
-@property (nonatomic,strong) UIImageView *backImageView;
 @property (nonatomic,strong) UIButton *voiceBtn;
 @property (nonatomic,strong) UIButton *imageBtn;
 @property (nonatomic,strong) UIButton *addBtn;
 @property (nonatomic,strong) UIButton *speakBtn;
-@property (nonatomic) CGSize currentContentSize;
-@property (nonatomic) CGRect origionFrameBack;
-@property (nonatomic) CGRect origionFrameText;
+@property (nonatomic,strong) UITextView *tipView;
+@property (nonatomic,strong) UIButton *sendBtn;
 @property (strong, nonatomic) ContentSizeBlock sizeBlock;
 @end
 
 @implementation KeyBordVIew
+
+- (void)dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:nil];
+    
+    self.voiceBtn = nil;
+    self.imageBtn = nil;
+    self.addBtn = nil;
+    self.speakBtn = nil;
+    self.tipView = nil;
+    self.sendBtn = nil;
+    self.sizeBlock = nil;
+
+    self.textField.delegate = nil;
+    self.textField = nil;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -34,7 +47,6 @@
         // Initialization code
         [self initialData];
         [self addConstraint];
-        _aa = 33;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(keyPressed:) name: UITextViewTextDidChangeNotification object: nil];
         self.textField.scrollEnabled = NO;
@@ -70,7 +82,6 @@
     self.textField = [[UIPlaceHolderTextView alloc] initWithFrame:CGRectZero];
     self.textField.placeholder = @"按住麦克风，语音输入文字";
     self.textField.delegate = self;
-//    self.textField
     [self addSubview:self.textField];
     
     //表情
@@ -82,6 +93,23 @@
     self.addBtn=[self buttonWith:@"chat_bottom_up_nor.png" hightLight:@"chat_bottom_up_nor.png" action:@selector(addBtnPress:)];
     [self.addBtn setFrame:CGRectZero];
     [self addSubview:self.addBtn];
+    
+    //提示
+    self.tipView = [[UITextView alloc] initWithFrame:CGRectZero];
+    [self.tipView setBackgroundColor:[UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1]];
+    [self.tipView setHidden:YES];
+    [self.tipView setTextAlignment:NSTextAlignmentCenter];
+    [self.tipView setText:@"向右滑动取消"];
+    [self.tipView setFont:[UIFont systemFontOfSize:18]];
+    [self.tipView setTextColor:[UIColor grayColor]];
+    [self addSubview:self.tipView];
+    
+    //发送按钮
+    self.sendBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [self.sendBtn setTitle:@"发送" forState:UIControlStateNormal];
+    [self.sendBtn addTarget:self action:@selector(sendBtnPress:) forControlEvents:UIControlEventTouchUpInside];
+    [self.sendBtn setHidden:YES];
+    [self addSubview:self.sendBtn];
 }
 
 
@@ -93,8 +121,7 @@
     [self addConstraints:voiceConstraintH];
     NSArray *voiceConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_voiceBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
     [self addConstraints:voiceConstraintV];
-    
-    
+
     //给MoreButton添加约束
     self.addBtn.translatesAutoresizingMaskIntoConstraints = NO;
     NSArray *moreButtonH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_addBtn(27)]-8-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_addBtn)];
@@ -115,6 +142,47 @@
     [self addConstraints:sendTextViewConstraintH];
     NSArray *sendTextViewConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[_textField]-5-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_textField)];
     [self addConstraints:sendTextViewConstraintV];
+    
+    //给提示框加约束
+    self.tipView.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *sendTipViewConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-45-[_tipView]-45-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_tipView)];
+    [self addConstraints:sendTipViewConstraintH];
+    NSArray *sendTipViewConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[_tipView]-8-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_tipView)];
+    [self addConstraints:sendTipViewConstraintV];
+    
+    //给发送按钮加约束
+    self.sendBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *sendButtonConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_sendBtn(54)]-15-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_sendBtn)];
+    [self addConstraints:sendButtonConstraintH];
+    NSArray *sendButtonConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_sendBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_sendBtn)];
+    [self addConstraints:sendButtonConstraintV];
+}
+
+- (void)changeToolView:(NSInteger)state {
+    
+    if (state == 1) {
+        
+        [self.imageBtn setHidden:YES];
+        [self.addBtn setHidden:YES];
+        [self.textField setHidden:YES];
+        [self.sendBtn setHidden:YES];
+        [self.tipView setHidden:NO];
+        
+    }else if (state == 0) {
+        
+        if (self.textField.hasText) {
+            [self.imageBtn setHidden:YES];
+            [self.addBtn setHidden:YES];
+            [self.sendBtn setHidden:NO];
+        }else {
+            [self.imageBtn setHidden:NO];
+            [self.addBtn setHidden:NO];
+            [self.sendBtn setHidden:YES];
+        }
+        
+        [self.textField setHidden:NO];
+        [self.tipView setHidden:YES];
+    }
 }
 
 - (void)voiceBtnTapped {
@@ -141,9 +209,10 @@
                 
                 iTime = [[NSDate date] timeIntervalSince1970];
                 [self.delegate beginRecord];
+                
+                //TODO:界面切换
+                [self changeToolView:i];
             }
-            
-            //TODO:界面切换
         }
         
         
@@ -160,9 +229,6 @@
                     if (self.delegate && [self.delegate respondsToSelector:@selector(cancelRecord)]) {
                         [self.delegate cancelRecord];
                     }
-                    
-                    //TODO:界面切换
-                    i = 0;
                 }
             }
         }
@@ -173,7 +239,6 @@
                 
                 NSLog(@"录音结束");
                 
-                //TODO:界面切换
                 double cTime = [[NSDate date] timeIntervalSince1970];
                 
                 if (cTime - iTime > 1) {
@@ -186,6 +251,7 @@
                     if (self.delegate && [self.delegate respondsToSelector:@selector(cancelRecord)]) {
                         [self.delegate cancelRecord];
                     }
+                    [self changeToolView:0];
                     UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:@"录音时间太短！" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles: nil];
                     [alter show];
                 }
@@ -194,15 +260,50 @@
     }
 }
 
--(void)imageBtnPress:(UIButton *)image
+- (void)imageBtnPress:(UIButton *)image
 {
     
     
 }
--(void)addBtnPress:(UIButton *)image
+
+- (void)addBtnPress:(UIButton *)add
 {
     
     
+}
+
+- (void)sendBtnPress:(UIButton *)send
+{
+    if (!self.textField.hasText) {
+        return;
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(KeyBordView:textFiledReturn:)]) {
+        
+        [self.delegate KeyBordView:self textFiledReturn:self.textField];
+        
+        NSString *tmp = @"测试";
+        CGFloat tmpHeight = [tmp sizeWithFont:[UIFont systemFontOfSize:14]
+                            constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999)
+                                lineBreakMode:UILineBreakModeWordWrap].height;
+        
+        
+        CGSize newSize = [self.textField.text sizeWithFont:[UIFont systemFontOfSize:14]
+                                         constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999)
+                                             lineBreakMode:UILineBreakModeWordWrap];
+        
+        NSInteger lineNum = newSize.height / tmpHeight;
+        CGSize contentSize = CGSizeMake(self.textField.frame.size.width-5, 44);
+        if (lineNum > 1) {
+            contentSize.height = lineNum*tmpHeight+44-tmpHeight;
+        }
+        
+        self.sizeBlock(contentSize);
+        [self.textField setScrollEnabled:YES];
+        [self.textField scrollRectToVisible:CGRectMake(0, 0, 1, contentSize.height+16) animated:NO];
+        
+        [self changeToolView:0];
+    }
 }
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
@@ -218,33 +319,35 @@
     
     if ([text isEqualToString:@"\n"]) {
         
-        if (range.location==0) {
+        if (range.location == 0) {
             return NO;
         }
         
-        if([self.delegate respondsToSelector:@selector(KeyBordView:textFiledReturn:)]){
+        if ([self.delegate respondsToSelector:@selector(KeyBordView:textFiledReturn:)]) {
             
             [self.delegate KeyBordView:self textFiledReturn:textView];
             
             NSString *tmp = @"测试";
-            CGFloat tmpHeight = [tmp sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999) lineBreakMode:UILineBreakModeWordWrap].height;
+            CGFloat tmpHeight = [tmp sizeWithFont:[UIFont systemFontOfSize:14]
+                                constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999)
+                                    lineBreakMode:UILineBreakModeWordWrap].height;
             
             
-            CGSize newSize = [self.textField.text sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999) lineBreakMode:UILineBreakModeWordWrap];
+            CGSize newSize = [self.textField.text sizeWithFont:[UIFont systemFontOfSize:14]
+                                             constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999)
+                                                 lineBreakMode:UILineBreakModeWordWrap];
+            
             NSInteger lineNum = newSize.height / tmpHeight;
-            NSInteger newSizeH = newSize.height;
-            NSInteger newSizeW = newSize.width;
-            
-            
             CGSize contentSize = CGSizeMake(self.textField.frame.size.width-5, 44);
             if (lineNum > 1) {
                 contentSize.height = lineNum*tmpHeight+44-tmpHeight;
             }
             
             self.sizeBlock(contentSize);
-            
             [self.textField setScrollEnabled:YES];
             [self.textField scrollRectToVisible:CGRectMake(0, 0, 1, contentSize.height+16) animated:NO];
+            
+            [self changeToolView:0];
             
             return NO;
         }
@@ -253,28 +356,22 @@
     return YES;
 }
 
-- (void)textViewDidChange:(UITextView *)textView
-{
+- (void)keyPressed:(NSNotification*)notification {
+    
+    [self changeToolView:0];
 
-}
-
--(void)setContentSizeBlock:(ContentSizeBlock)block
-{
-    self.sizeBlock = block;
-}
-
-
--(void) keyPressed: (NSNotification*) notification{
-    // get the size of the text block so we can work our magic
     NSString *tmp = @"测试";
-    CGFloat tmpHeight = [tmp sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999) lineBreakMode:UILineBreakModeWordWrap].height;
+    CGFloat tmpHeight = [tmp sizeWithFont:[UIFont systemFontOfSize:14]
+                        constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999)
+                            lineBreakMode:UILineBreakModeWordWrap].height;
     
     
-    CGSize newSize = [self.textField.text sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999) lineBreakMode:UILineBreakModeWordWrap];
+    CGSize newSize = [self.textField.text sizeWithFont:[UIFont systemFontOfSize:14]
+                                     constrainedToSize:CGSizeMake(self.textField.frame.size.width-5,9999)
+                                         lineBreakMode:UILineBreakModeWordWrap];
+    
     NSInteger lineNum = newSize.height / tmpHeight;
-    NSInteger newSizeH = newSize.height;
-    NSInteger newSizeW = newSize.width;
-//    NSLog(@"NEW SIZE : %ld X %ld", newSizeW, newSizeH);
+
     if (self.textField.hasText && newSize.height < 60) {
         CGSize contentSize = CGSizeMake(self.textField.frame.size.width-5, 44);
         if (lineNum > 1) {
@@ -286,6 +383,11 @@
         [self.textField setScrollEnabled:YES];
         [self.textField scrollRectToVisible:CGRectMake(0, 0, 1, contentSize.height+16) animated:NO];
     }
+}
+
+- (void)setContentSizeBlock:(ContentSizeBlock)block
+{
+    self.sizeBlock = block;
 }
 
 @end

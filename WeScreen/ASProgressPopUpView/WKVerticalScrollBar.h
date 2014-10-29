@@ -60,6 +60,8 @@
 @property (nonatomic, readwrite, retain) UIView *handleAccessoryView;
 @property (nonatomic, readwrite, retain) UIImageView *backgroundImageView;
 
+@property (nonatomic, readwrite, retain) UIImageView *trackerView;
+
 - (void)setHandleColor:(UIColor *)color forState:(UIControlState)state;
 
 @end

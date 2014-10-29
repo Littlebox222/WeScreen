@@ -54,22 +54,27 @@ static NSString *const cellIdentifier=@"QQChart";
 
 @property (nonatomic, strong) ThreadView *threadView;//查看对话view
 @property (strong, nonatomic) NSLayoutConstraint *keyBordViewConstraintHeight;
-@property (assign, nonatomic) CGRect keyEndFrame;
 @end
 
 @implementation MainViewController
 
 - (void)dealloc {
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [self.tableView removeObserver:self forKeyPath:@"contentOffset" context:nil];
+    
     [_verticalScrollBar release];
     //[_accessoryView release];
     
     _tableView.delegate = nil;
+    _tableView.dataSource = nil;
     [_tableView release];
     
     _keyBordView.delegate = nil;
     [_keyBordView release];
     
+    self.uploader = nil;
     [_iSRResult release];
     
     [_cellFrames removeAllObjects];
@@ -80,6 +85,8 @@ static NSString *const cellIdentifier=@"QQChart";
     [_navMenuButton release];
     
     self.threadView = nil;
+    
+    [_keyBordViewConstraintHeight release];
     
     [super dealloc];
 }
@@ -125,40 +132,16 @@ static NSString *const cellIdentifier=@"QQChart";
     }];
 }
 
-//键盘出来的时候调整tooView的位置
--(void) keyChange:(NSNotification *) notify
-{
-    NSDictionary *dic = notify.userInfo;
-    
-    CGRect endKey = [dic[@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
-    CGRect endKeySwap = [self.view convertRect:endKey fromView:self.view.window];
-    self.keyEndFrame = endKeySwap;
-    
-    
-    //运动时间
-    [UIView animateWithDuration:[dic[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
-        
-        CGRect frame = self.view.frame;
-        frame.size.height = endKeySwap.origin.y;
-        NSLog(@"%@",[NSValue valueWithCGRect:endKeySwap]);
-        
-        self.view.frame = frame;
-        self.keyBordView.frame = frame;
-        
-        [self tableViewScrollCurrentIndexPath];
-    }];
-}
-
 #pragma mark - Basic use for the info panel
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
-    
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
-    
+
     self.navMenuButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.navMenuButton setFrame:CGRectMake(0, 0, 100, 42)];
     UIImage *dropImage = [UIImage imageNamed:@"drop_button_down.png"];
@@ -180,7 +163,6 @@ static NSString *const cellIdentifier=@"QQChart";
     
     //add UItableView
     self.tableView=[[[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width-20, self.view.frame.size.height-44) style:UITableViewStylePlain] autorelease];
-//    [self.tableView registerClass:[ChartCell class] forCellReuseIdentifier:cellIdentifier];
     self.tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.tableView.allowsSelection = NO;
     self.tableView.backgroundColor=[UIColor colorWithRed:232.0/255 green:232.0/255 blue:232.0/255 alpha:1];
@@ -206,9 +188,10 @@ static NSString *const cellIdentifier=@"QQChart";
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
     //
-    _keyBordView = [[KeyBordVIew alloc]initWithFrame:CGRectZero];
+    self.keyBordView = [[[KeyBordVIew alloc]initWithFrame:CGRectZero] autorelease];
     self.keyBordView.delegate = self;
-    [self.view addSubview:[self.keyBordView autorelease]];
+    [self.view addSubview:self.keyBordView];
+
     _keyBordView.translatesAutoresizingMaskIntoConstraints = NO;
     NSArray *toolViewContraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_keyBordView]|"
                                                                           options:0
@@ -311,6 +294,7 @@ static NSString *const cellIdentifier=@"QQChart";
         self.keyBordView.textField.text = [NSString stringWithFormat:@"@%@",chartCell.cellFrame.chartMessage.name];
     }else if ([tapType isEqualToString:@"copy"]) {
         self.keyBordView.textField.text = chartCell.cellFrame.chartMessage.content;
+        [self.keyBordView keyPressed:nil];
     }else if ([tapType isEqualToString:@"back"]) {
         self.keyBordView.textField.text = [NSString stringWithFormat:@"回复%@:",chartCell.cellFrame.chartMessage.name];
     }else if ([tapType isEqualToString:@"viewThread"]) {
@@ -415,25 +399,8 @@ static NSString *const cellIdentifier=@"QQChart";
         [self tableViewScrollCurrentIndexPath];
         
         self.verticalScrollBar.frame = CGRectMake(self.verticalScrollBar.frame.origin.x, self.verticalScrollBar.frame.origin.y, self.verticalScrollBar.frame.size.width, self.view.frame.size.height-108-height);
+        self.verticalScrollBar.backgroundImageView.frame = CGRectMake(0, 0, 8, self.verticalScrollBar.frame.size.height);
     }
-}
-
--(void)updateView:(KeyBordVIew *)keyboardView {
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        
-        self.tableView.frame = CGRectMake(self.tableView.frame.origin.x,
-                                          self.tableView.frame.origin.y,
-                                          self.tableView.frame.size.width,
-                                          self.tableView.frame.size.height-keyboardView.bb);
-        
-        self.verticalScrollBar.frame = CGRectMake(self.verticalScrollBar.frame.origin.x,
-                                                  self.verticalScrollBar.frame.origin.y,
-                                                  self.verticalScrollBar.frame.size.width,
-                                                  self.verticalScrollBar.frame.size.height - keyboardView.bb);
-        
-        [self tableViewScrollCurrentIndexPath];
-    }];
 }
 
 - (void)KeyBordView:(KeyBordVIew *)keyBoardView textFiledReturn:(UITextView *)textFiled
@@ -534,6 +501,7 @@ static NSString *const cellIdentifier=@"QQChart";
         text = [NSString stringWithFormat:@"发生错误：%d %@",error.errorCode,error.errorDesc];
     }
     
+    [self.keyBordView changeToolView:0];
     NSLog(@"%@",text);
 }
 
@@ -572,11 +540,8 @@ static NSString *const cellIdentifier=@"QQChart";
 //        [self KeyBordView:self.keyBordView textFiledBegin:self.keyBordView.textField];
 //        [self.keyBordView.textField becomeFirstResponder];
         
-        
-        
+        [self.keyBordView keyPressed:nil];
     }
-//
-//    NSLog(@"isLast=%d",isLast);
 }
 
 /**
@@ -589,6 +554,8 @@ static NSString *const cellIdentifier=@"QQChart";
 - (void) onCancel
 {
     NSLog(@"识别取消");
+    
+    [self.keyBordView changeToolView:0];
 }
 
 #pragma mark - IFlyDataUploaderDelegate
