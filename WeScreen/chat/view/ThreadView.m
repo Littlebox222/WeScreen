@@ -57,7 +57,16 @@
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 98;
+    ChartMessage *chartMessage = [self.dataArray objectAtIndex:indexPath.row];
+    
+    CGSize maxSize = CGSizeMake(200, MAXFLOAT);
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, MAXFLOAT)];
+    
+    label.text = chartMessage.content;
+    UIFont *font = [UIFont systemFontOfSize:16];
+    CGRect labelRect = [label.text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil];
+    
+    return labelRect.size.height + 75;
 }
 
 @end

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6206.8" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7026.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -10,10 +10,10 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QX1-kB-x81">
+                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QX1-kB-x81">
                     <rect key="frame" x="10" y="80" width="300" height="370"/>
                     <subviews>
-                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="o0F-uJ-ve3">
+                        <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="o0F-uJ-ve3">
                             <rect key="frame" x="0.0" y="0.0" width="300" height="44"/>
                             <subviews>
                                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="s9F-JW-6fv" userLabel="separator">
@@ -37,9 +37,13 @@
                             </subviews>
                             <color key="backgroundColor" red="0.97112771740000003" green="0.97112771740000003" blue="0.97112771740000003" alpha="1" colorSpace="calibratedRGB"/>
                         </view>
-                        <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="4zx-Xb-ZJS">
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="4zx-Xb-ZJS">
                             <rect key="frame" x="0.0" y="44" width="300" height="326"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="326" id="CeO-nw-Dyz"/>
+                                <constraint firstAttribute="width" constant="300" id="bpR-jt-Y8M"/>
+                            </constraints>
                             <connections>
                                 <outlet property="dataSource" destination="jls-Mw-HiC" id="xSn-gN-4G1"/>
                                 <outlet property="delegate" destination="jls-Mw-HiC" id="kd8-aw-8Tr"/>
@@ -47,14 +51,15 @@
                         </tableView>
                     </subviews>
                     <color key="backgroundColor" red="0.97112771739130432" green="0.97112771739130432" blue="0.97112771739130432" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstItem="4zx-Xb-ZJS" firstAttribute="leading" secondItem="QX1-kB-x81" secondAttribute="leading" id="38I-ZL-I3l"/>
+                        <constraint firstItem="4zx-Xb-ZJS" firstAttribute="top" secondItem="o0F-uJ-ve3" secondAttribute="bottom" id="z9k-QV-Y4c"/>
+                    </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="calibratedRGB"/>
             <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4">
-                <size key="portraitSize" width="320" height="568"/>
-                <size key="landscapeSize" width="568" height="320"/>
-            </simulatedScreenMetrics>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
             <connections>
                 <outlet property="cancelBtn" destination="9zu-jz-L0s" id="vda-dm-SrJ"/>
                 <outlet property="tableView" destination="4zx-Xb-ZJS" id="pV6-fd-KbU"/>

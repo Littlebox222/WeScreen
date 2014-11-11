@@ -24,11 +24,18 @@
 }
 
 - (void)initViews{
+    
     if (self.chartMessage){
         self.avaterImageView.image = [UIImage imageNamed:self.chartMessage.icon];
         self.nameLabel.text = self.chartMessage.name;
         self.dateLabel.text = @"09-28 10:59";
         self.contentLabel.text = self.chartMessage.content;
+        
+        CGSize maxSize = CGSizeMake(200, MAXFLOAT);
+        
+        CGRect labelRect = [self.contentLabel.text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:self.contentLabel.font} context:nil];
+        self.contentLabel.frame = labelRect;
+        self.contentLabel.numberOfLines = labelRect.size.height / self.contentLabel.font.lineHeight;
     }
 }
 

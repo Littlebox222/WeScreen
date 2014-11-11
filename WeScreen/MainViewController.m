@@ -337,7 +337,7 @@ static NSString *const cellIdentifier=@"QQChart";
         cm = [[[ChartMessage alloc] init] autorelease];
         cm.icon = @"icon02.jpg";
         cm.name = @"天天甜甜";
-        cm.content = @"不v体育i";
+        cm.content = @"不v体育i阿狸的思考几分拉萨肯定放假啦可是对方家拉屎的空间飞拉萨的减肥啦手机费拉斯克奖法拉盛看得见法拉克束带结发";
         [dataArray addObject:cm];
         cm = [[[ChartMessage alloc] init] autorelease];
         cm.icon = @"icon01.jpg";

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6206.8" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7026.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -13,27 +14,58 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JPq-Pc-NgK">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="JPq-Pc-NgK">
                         <rect key="frame" x="8" y="8" width="60" height="60"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="60" id="qnY-yc-C3l"/>
+                            <constraint firstAttribute="width" constant="60" id="tii-lz-P7N"/>
+                        </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="天天天天" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HgH-xe-Ydo">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="天天天天" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HgH-xe-Ydo">
                         <rect key="frame" x="82" y="8" width="230" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="230" id="4VS-8R-6oY"/>
+                            <constraint firstAttribute="height" constant="21" id="j73-sW-sq7"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="09-28 10:59" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vbq-1h-ahI">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="09-28 10:59" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vbq-1h-ahI">
                         <rect key="frame" x="82" y="37" width="230" height="17"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="230" id="1RO-hS-Ee8"/>
+                            <constraint firstAttribute="height" constant="17" id="2fP-bp-MC0"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="天天天天" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4gU-Zt-tQ2">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="天天天天" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4gU-Zt-tQ2">
                         <rect key="frame" x="82" y="66" width="230" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="230" id="NzI-6O-lsB"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
                         <nil key="highlightedColor"/>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="NzI-6O-lsB"/>
+                            </mask>
+                        </variation>
                     </label>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="Vbq-1h-ahI" firstAttribute="leading" secondItem="JPq-Pc-NgK" secondAttribute="trailing" constant="14" id="5iO-En-9Hx"/>
+                    <constraint firstItem="HgH-xe-Ydo" firstAttribute="leading" secondItem="JPq-Pc-NgK" secondAttribute="trailing" constant="14" id="7c3-9P-i5z"/>
+                    <constraint firstItem="HgH-xe-Ydo" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="BXR-2O-E0W"/>
+                    <constraint firstItem="JPq-Pc-NgK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="CC8-Yv-rsD"/>
+                    <constraint firstItem="Vbq-1h-ahI" firstAttribute="top" secondItem="HgH-xe-Ydo" secondAttribute="bottom" constant="8" id="D1A-aM-ET2"/>
+                    <constraint firstItem="4gU-Zt-tQ2" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="JGk-Vi-oZP"/>
+                    <constraint firstItem="4gU-Zt-tQ2" firstAttribute="top" secondItem="Vbq-1h-ahI" secondAttribute="bottom" constant="12" id="NWz-al-csk"/>
+                    <constraint firstItem="4gU-Zt-tQ2" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="74" id="OoJ-aj-pRh"/>
+                    <constraint firstItem="JPq-Pc-NgK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="kPG-Nb-sX7"/>
+                </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="avaterImageView" destination="JPq-Pc-NgK" id="rjm-gv-3jT"/>
