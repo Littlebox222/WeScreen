@@ -74,6 +74,7 @@
 		508FCA3F19EBBE7600D02AC4 /* SBJson4StreamWriterState.m in Sources */ = {isa = PBXBuildFile; fileRef = 508FCA3719EBBE7600D02AC4 /* SBJson4StreamWriterState.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		508FCA4019EBBE7600D02AC4 /* SBJson4Writer.m in Sources */ = {isa = PBXBuildFile; fileRef = 508FCA3919EBBE7600D02AC4 /* SBJson4Writer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		508FCA4419EBDF9C00D02AC4 /* UIPlaceHolderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 508FCA4319EBDF9C00D02AC4 /* UIPlaceHolderTextView.m */; };
+		50D87E871A11C5520079F6C2 /* PulsingLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 50D87E861A11C5520079F6C2 /* PulsingLayer.m */; };
 		C1FFB66019FE3DF7008374D4 /* ThreadView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FFB65F19FE3DF7008374D4 /* ThreadView.m */; };
 		C1FFB66219FE3E54008374D4 /* ThreadView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C1FFB66119FE3E54008374D4 /* ThreadView.xib */; };
 		C1FFB66619FE471D008374D4 /* ThreadViewCellTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FFB66419FE471D008374D4 /* ThreadViewCellTableViewCell.m */; };
@@ -190,6 +191,8 @@
 		508FCA4119EBC1DC00D02AC4 /* Definition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Definition.h; sourceTree = "<group>"; };
 		508FCA4219EBDF9C00D02AC4 /* UIPlaceHolderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIPlaceHolderTextView.h; sourceTree = "<group>"; };
 		508FCA4319EBDF9C00D02AC4 /* UIPlaceHolderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPlaceHolderTextView.m; sourceTree = "<group>"; };
+		50D87E851A11C5520079F6C2 /* PulsingLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PulsingLayer.h; sourceTree = "<group>"; };
+		50D87E861A11C5520079F6C2 /* PulsingLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PulsingLayer.m; sourceTree = "<group>"; };
 		C1FFB65E19FE3DF6008374D4 /* ThreadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadView.h; sourceTree = "<group>"; };
 		C1FFB65F19FE3DF7008374D4 /* ThreadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadView.m; sourceTree = "<group>"; };
 		C1FFB66119FE3E54008374D4 /* ThreadView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreadView.xib; sourceTree = "<group>"; };
@@ -248,6 +251,7 @@
 		500E8AEA19DEE4E0000A7DCC /* WeScreen */ = {
 			isa = PBXGroup;
 			children = (
+				50D87E7C1A11BFA60079F6C2 /* PulsingHalo */,
 				508FCA2A19EBBE7600D02AC4 /* SBJson */,
 				508FCA2319EBBCAC00D02AC4 /* ifly */,
 				508FCA0219EAD0C400D02AC4 /* ASProgressPopUpView */,
@@ -466,6 +470,15 @@
 			path = SBJson;
 			sourceTree = "<group>";
 		};
+		50D87E7C1A11BFA60079F6C2 /* PulsingHalo */ = {
+			isa = PBXGroup;
+			children = (
+				50D87E851A11C5520079F6C2 /* PulsingLayer.h */,
+				50D87E861A11C5520079F6C2 /* PulsingLayer.m */,
+			);
+			path = PulsingHalo;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -613,6 +626,7 @@
 				500E8AEE19DEE4E0000A7DCC /* main.m in Sources */,
 				508FCA3E19EBBE7600D02AC4 /* SBJson4StreamWriter.m in Sources */,
 				C1FFB66019FE3DF7008374D4 /* ThreadView.m in Sources */,
+				50D87E871A11C5520079F6C2 /* PulsingLayer.m in Sources */,
 				500E8B3219DEF5CC000A7DCC /* ChartCellFrame.m in Sources */,
 				500E8B1B19DEE731000A7DCC /* RootViewController.m in Sources */,
 				508FCA3C19EBBE7600D02AC4 /* SBJson4StreamParserState.m in Sources */,

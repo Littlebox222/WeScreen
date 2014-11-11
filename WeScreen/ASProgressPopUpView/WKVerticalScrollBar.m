@@ -71,9 +71,9 @@
         [handle setAnchorPoint:CGPointMake(1.0f, 0.0f)];
         [handle setFrame:CGRectMake(0, 0, _handleWidth, 0)];
         
-        self.trackerView = [[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 8, 1)] autorelease];
+        self.trackerView = [[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)] autorelease];
         UIImage *image = [UIImage imageNamed:@"timeline_tracker.png"];
-        image = [image stretchableImageWithLeftCapWidth:0 topCapHeight:image.size.height-20];
+        image = [image stretchableImageWithLeftCapWidth:1 topCapHeight:image.size.height-20];
         [self.trackerView setImage:image];
         [self addSubview:self.trackerView];
         
@@ -207,7 +207,7 @@
                             0, bounds.size.height - handleHeight);
 
     [handle setPosition:CGPointMake(bounds.size.width, 0)];
-    [handle setBounds:CGRectMake(0, 0, 8, handleY+handleHeight)];
+    [handle setBounds:CGRectMake(0, 0, 8, handleY+handleHeight-3)];
     
     // Center the accessory view to the left of the handle
     [_handleAccessoryView setCenter:CGPointMake(bounds.size.width - _handleHitWidth, handleY + (handleHeight / 2))];
@@ -221,10 +221,8 @@
     
     [CATransaction begin];
     [CATransaction setAnimationDuration:0.3f];
-    [self.trackerView setFrame:CGRectMake(0, 0, 8, handleY+handleHeight)];
+    [self.trackerView setFrame:CGRectMake(2, 2, 5, handleY+handleHeight-3>2?handleY+handleHeight-3:2)];
     [CATransaction commit];
-    
-    NSLog(@"%f", self.trackerView.frame.size.height);
 }
 
 - (BOOL)handleVisible
