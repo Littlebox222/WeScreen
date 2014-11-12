@@ -26,6 +26,7 @@ typedef void (^ContentSizeBlock)(CGSize contentSize);
 @interface KeyBordVIew : UIView
 @property (nonatomic,assign) id<KeyBordVIewDelegate>delegate;
 @property (nonatomic,strong) UIPlaceHolderTextView *textField;
+@property (assign) BOOL isReturnBack;
 
 -(void)setContentSizeBlock:(ContentSizeBlock) block;
 

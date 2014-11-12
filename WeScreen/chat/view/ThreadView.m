@@ -60,7 +60,7 @@
     ChartMessage *chartMessage = [self.dataArray objectAtIndex:indexPath.row];
     
     CGSize maxSize = CGSizeMake(200, MAXFLOAT);
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, MAXFLOAT)];
+    UILabel *label = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, MAXFLOAT)] autorelease];
     
     label.text = chartMessage.content;
     UIFont *font = [UIFont systemFontOfSize:16];

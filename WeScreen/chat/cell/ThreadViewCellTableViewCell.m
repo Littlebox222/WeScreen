@@ -26,8 +26,8 @@
 - (void)initViews{
     
     if (self.chartMessage){
-        self.avaterImageView.image = [UIImage imageNamed:self.chartMessage.icon];
-        self.nameLabel.text = self.chartMessage.name;
+        //self.avaterImageView.image = [UIImage imageNamed:self.chartMessage.icon];
+        //self.nameLabel.text = self.chartMessage.name;
         self.dateLabel.text = @"09-28 10:59";
         self.contentLabel.text = self.chartMessage.content;
         

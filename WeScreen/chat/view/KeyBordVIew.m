@@ -218,6 +218,7 @@
             [self.addBtn setHidden:YES];
             [self.sendBtn setHidden:NO];
         }else {
+            self.isReturnBack = NO;
             [self.imageBtn setHidden:NO];
             [self.addBtn setHidden:NO];
             [self.sendBtn setHidden:YES];

@@ -8,6 +8,8 @@
 
 #import "ChartCell.h"
 #import "ChartContentView.h"
+#import "AppDelegate.h"
+
 @interface ChartCell()<ChartContentViewDelegate>
 @property (nonatomic,strong) UIImageView *icon;
 @property (nonatomic,strong) ChartContentView *chartView;
@@ -32,7 +34,6 @@
         self.chartView.delegate=self;
         [self.contentView addSubview:self.chartView];
         
-        self.userName = @"小逗Baaa";
         self.userNameLabel = [[UILabel alloc] init];
         self.userNameLabel.font = [UIFont systemFontOfSize:10];
         [self.contentView addSubview:self.userNameLabel];
@@ -42,7 +43,7 @@
         [self.likeButton setImage:likeImage forState:UIControlStateNormal];
         [self.likeButton setBackgroundColor:[UIColor clearColor]];
         [self.likeButton addTarget:self action:@selector(like:) forControlEvents:UIControlEventTouchUpInside];
-        [self.likeButton setTitle:@"1015" forState:UIControlStateNormal];
+        [self.likeButton setTitle:@"" forState:UIControlStateNormal];
         [self.likeButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
         [self.likeButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
         
@@ -53,20 +54,20 @@
 -(void)setCellFrame:(ChartCellFrame *)cellFrame
 {
    
-    _cellFrame=cellFrame;
+    _cellFrame = cellFrame;
     
-    ChartMessage *chartMessage=cellFrame.chartMessage;
+    ChartMessage *chartMessage = cellFrame.chartMessage;
     
-    self.icon.frame=cellFrame.iconRect;
-    self.icon.image=[UIImage imageNamed:chartMessage.icon];
+    self.icon.frame = cellFrame.iconRect;
+    self.icon.image = [UIImage imageNamed:chartMessage.userInfo.iconUrl];
     
     self.userNameLabel.frame = cellFrame.nameRect;
-    self.userNameLabel.text = self.userName;
+    self.userNameLabel.text = chartMessage.userInfo.name;
    
-    self.chartView.chartMessage=chartMessage;
-    self.chartView.frame=cellFrame.chartViewRect;
+    self.chartView.chartMessage = chartMessage;
+    self.chartView.frame = cellFrame.chartViewRect;
     [self setBackGroundImageViewImage:self.chartView from:@"chatfrom_bg_normal@2x.png" to:@"chatto_bg_normal@2x.png"];
-    self.chartView.contentLabel.text=chartMessage.content;
+    self.chartView.contentLabel.text = chartMessage.content;
     
     if (cellFrame.chartMessage.messageType == kMessageFrom) {
         self.likeButton.frame = cellFrame.likeRect;
@@ -195,6 +196,36 @@
     UIImage *likeImage = [UIImage imageNamed:@"like_highlighted.png"];
     [self.likeButton setImage:likeImage forState:UIControlStateNormal];
     [self.likeButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    
+    /*
+    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/like?uid=%@&cid=%@", kCurrentUserID, self.chartView.chartMessage.mid];
+    NSURL *url = [NSURL URLWithString:string];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request setRequestMethod:@"GET"];
+    request.defaultResponseEncoding = NSUTF8StringEncoding;
+    request.delegate = self;
+    [request startAsynchronous];
+     */
+}
+
+#pragma mark - ASIHTTPRequestDelegate
+
+- (void)requestFinished:(ASIHTTPRequest *)request
+{
+    NSString *responseString = [request responseString];
+    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData: [responseString dataUsingEncoding:NSUTF8StringEncoding]
+                                                         options: NSJSONReadingMutableContainers
+                                                           error:nil];
+    
+    NSLog(@"%@", responseString);
+}
+
+- (void)requestFailed:(ASIHTTPRequest *)request
+{
+    NSError *error = [request error];
+    
+    NSLog(@"%@", error);
 }
 
 @end

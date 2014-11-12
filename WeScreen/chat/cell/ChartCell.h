@@ -16,7 +16,9 @@
 @end
 
 #import "ChartCellFrame.h"
-@interface ChartCell : UITableViewCell
+#import "ASIHTTPRequest.h"
+
+@interface ChartCell : UITableViewCell<ASIHTTPRequestDelegate>
 @property (nonatomic,strong) ChartCellFrame *cellFrame;
 @property (nonatomic,assign) id<ChartCellDelegate> delegate;
 @end

@@ -45,6 +45,8 @@
     self.window.rootViewController = nc;
     [self.window makeKeyAndVisible];
     
+    self.uid = [NSString stringWithFormat:kUser3];
+    
     return YES;
 }
 

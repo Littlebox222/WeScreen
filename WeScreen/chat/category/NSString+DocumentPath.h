@@ -11,3 +11,7 @@
 @interface NSString (DocumentPath)
 +(NSString *)documentPathWith:(NSString *)fileName;
 @end
+
+@interface NSString (NSString_Extended)
+- (NSString *)urlencode;
+@end

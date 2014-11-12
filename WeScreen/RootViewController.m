@@ -61,7 +61,7 @@
     [self.view.layer addSublayer:self.arcLayer];
     [self drawLineAnimation:self.arcLayer];
     
-    [NSTimer scheduledTimerWithTimeInterval:5.0
+    [NSTimer scheduledTimerWithTimeInterval:1.0
                                      target:self
                                    selector:@selector(showView:)
                                    userInfo:nil
@@ -86,6 +86,7 @@
     [self.arcLayer removeFromSuperlayer];
     
     MainViewController *mainViewController = [[[MainViewController alloc] init] autorelease];
+    mainViewController.topic = @"微屏互动测试2";
     [self.navigationController pushViewController:mainViewController animated:YES];
 }
 

@@ -30,6 +30,8 @@
 #import "RecognizerFactory.h"
 
 #import "ThreadView.h"
+#import "AppDelegate.h"
+#import "NSString+DocumentPath.h"
 
 @class IFlyDataUploader;
 @class IFlySpeechRecognizer;
@@ -54,11 +56,28 @@ static NSString *const cellIdentifier=@"QQChart";
 
 @property (nonatomic, strong) ThreadView *threadView;//查看对话view
 @property (strong, nonatomic) NSLayoutConstraint *keyBordViewConstraintHeight;
+
+@property (strong, nonatomic) NSTimer *requestTimer;
+@property (strong, nonatomic) NSString *lastMid;
+@property (strong, nonatomic) NSString *currentRtid;
+
 @end
 
 @implementation MainViewController
 
+@synthesize topic = _topic;
+
 - (void)dealloc {
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations) {
+        [req cancel];
+        [req setDelegate:nil];
+    }
+    
+    if( _requestTimer != nil ){
+        [_requestTimer invalidate];
+        _requestTimer = nil;
+    }
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
@@ -88,6 +107,10 @@ static NSString *const cellIdentifier=@"QQChart";
     
     [_keyBordViewConstraintHeight release];
     
+    [_topic release];
+    [_lastMid release];
+    [_currentRtid release];
+    
     [super dealloc];
 }
 
@@ -100,6 +123,15 @@ static NSString *const cellIdentifier=@"QQChart";
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    //TODO:拉数据
+    /*
+    _requestTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                     target:self
+                                                   selector:@selector(requestForListComments)
+                                                   userInfo:nil
+                                                    repeats:NO];
+     */
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -108,9 +140,31 @@ static NSString *const cellIdentifier=@"QQChart";
     [_iFlySpeechRecognizer cancel];
     [_iFlySpeechRecognizer setDelegate: nil];
     
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations) {
+        [req cancel];
+        [req setDelegate:nil];
+    }
     
+    if( _requestTimer != nil ) {
+        [_requestTimer invalidate];
+        _requestTimer = nil;
+    }
     
     [super viewWillDisappear:animated];
+}
+
+- (void)requestForListComments {
+    
+    NSLog(@"============== %@", _lastMid);
+    
+    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/list?topic=%@&sinceId=0&count=15", [self.topic urlencode]];
+    NSURL *url = [NSURL URLWithString:string];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request setRequestMethod:@"GET"];
+    request.defaultResponseEncoding = NSUTF8StringEncoding;
+    request.delegate = self;
+    request.userInfo = @{@"requestKind":@"List Comment"};
+    [request startAsynchronous];
 }
 
 #pragma mark - keyboard
@@ -149,7 +203,7 @@ static NSString *const cellIdentifier=@"QQChart";
     [self.navMenuButton setImage:dropImage forState:UIControlStateNormal];
     [self.navMenuButton setBackgroundColor:[UIColor clearColor]];
     [self.navMenuButton addTarget:self action:@selector(dropDownMenu:) forControlEvents:UIControlEventTouchUpInside];
-    [self.navMenuButton setTitle:@"爸爸去哪儿9.7" forState:UIControlStateNormal];
+    [self.navMenuButton setTitle:self.topic forState:UIControlStateNormal];
     [self.navMenuButton setTitleColor:[UIColor colorWithRed:53/255.0 green:53/255.0 blue:53/255.0 alpha:1] forState:UIControlStateNormal];
     [self.navMenuButton.titleLabel setFont:[UIFont systemFontOfSize:18]];
     [self.navMenuButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -20, 0, 0)];
@@ -157,17 +211,17 @@ static NSString *const cellIdentifier=@"QQChart";
     self.navigationItem.titleView = self.navMenuButton;
     
     
-    self.title=@"爸爸去哪儿9.7";
-    self.view.backgroundColor=[UIColor colorWithRed:232.0/255 green:232.0/255 blue:232.0/255 alpha:1];
+    self.title = self.topic;
+    self.view.backgroundColor = [UIColor colorWithRed:232.0/255 green:232.0/255 blue:232.0/255 alpha:1];
     
     
     //add UItableView
-    self.tableView=[[[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width-20, self.view.frame.size.height-44) style:UITableViewStylePlain] autorelease];
-    self.tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
+    self.tableView = [[[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width-20, self.view.frame.size.height-44) style:UITableViewStylePlain] autorelease];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.allowsSelection = NO;
-    self.tableView.backgroundColor=[UIColor colorWithRed:232.0/255 green:232.0/255 blue:232.0/255 alpha:1];
-    self.tableView.dataSource=self;
-    self.tableView.delegate=self;
+    self.tableView.backgroundColor = [UIColor colorWithRed:232.0/255 green:232.0/255 blue:232.0/255 alpha:1];
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
     [self.tableView setShowsVerticalScrollIndicator:NO];
     
     [self.tableView addObserver:self
@@ -215,9 +269,11 @@ static NSString *const cellIdentifier=@"QQChart";
     [_accessoryView setAlpha:0.0f];
     [_verticalScrollBar setHandleAccessoryView:_accessoryView];
     
+    self.cellFrames = [NSMutableArray array];
     
     //初始化数据
-    [self initwithData];
+    //[self initwithData];
+    _lastMid = @"0";
     
     //
     _iFlySpeechRecognizer = [RecognizerFactory CreateRecognizer:self Domain:@"iat"];
@@ -228,32 +284,29 @@ static NSString *const cellIdentifier=@"QQChart";
 
 -(void)initwithData
 {
-    
-    self.cellFrames=[NSMutableArray array];
-    
-    NSString *path=[[NSBundle mainBundle] pathForResource:@"messages" ofType:@"plist"];
-    NSArray *data=[NSArray arrayWithContentsOfFile:path];
-    
-    for(NSDictionary *dict in data){
-        
-        ChartCellFrame *cellFrame=[[[ChartCellFrame alloc]init] autorelease];
-        ChartMessage *chartMessage=[[[ChartMessage alloc]init] autorelease];
-        chartMessage.dict=dict;
-        cellFrame.chartMessage=chartMessage;
-        [self.cellFrames addObject:cellFrame];
-        [self.cellFrames addObject:cellFrame];
-    }
-    
-    for(NSDictionary *dict in data){
-        
-        ChartCellFrame *cellFrame=[[[ChartCellFrame alloc]init] autorelease];
-        ChartMessage *chartMessage=[[[ChartMessage alloc]init] autorelease];
-        chartMessage.dict=dict;
-        cellFrame.chartMessage=chartMessage;
-        [self.cellFrames addObject:cellFrame];
-        [self.cellFrames addObject:cellFrame];
-    }
-    
+    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/list?topic=%@&sinceId=0&count=15", [self.topic urlencode]];
+    NSURL *url = [NSURL URLWithString:string];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request setRequestMethod:@"GET"];
+    request.defaultResponseEncoding = NSUTF8StringEncoding;
+    request.delegate = self;
+    request.userInfo = @{@"requestKind":@"List Comment"};
+    [request startAsynchronous];
+
+
+//    //NSString *s = [NSString stringWithFormat:@"想说啥就说啥呗"];
+//    NSString *s = [NSString stringWithFormat:@"别闹了，你俩快点睡觉"];
+//    
+//    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/create"];
+//    NSURL *url = [NSURL URLWithString:string];
+//    ASIFormDataRequest *request = [[ASIFormDataRequest alloc] initWithURL:url];
+//    [request setPostValue:s forKey:@"content"];
+//    //[request setPostValue:@"3775796348452870" forKey:@"uid"];
+//    [request setPostValue:@"3775796952432647" forKey:@"uid"];
+//    [request setPostValue:self.topic forKey:@"topic"];
+//    request.delegate = self;
+//    request.defaultResponseEncoding = NSUTF8StringEncoding;
+//    [request startAsynchronous];
 }
 
 - (void)selectRightAction:(id)sender
@@ -278,9 +331,9 @@ static NSString *const cellIdentifier=@"QQChart";
     ChartCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (cell == nil) {
         cell = [[[ChartCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
-        cell.delegate=self;
+        cell.delegate = self;
     }
-    cell.cellFrame=self.cellFrames[indexPath.row];
+    cell.cellFrame = self.cellFrames[indexPath.row];
     
     return cell;
 }
@@ -289,20 +342,30 @@ static NSString *const cellIdentifier=@"QQChart";
 }
 
 - (void)chartCell:(ChartCell *)chartCell tapType:(NSString *)tapType;
-{    
+{
+    
     if ([tapType isEqualToString:@"atTa"]) {
-        self.keyBordView.textField.text = [NSString stringWithFormat:@"@%@",chartCell.cellFrame.chartMessage.name];
+        
+        self.keyBordView.textField.text = [NSString stringWithFormat:@"@%@ ",chartCell.cellFrame.chartMessage.userInfo.name];
+        
     }else if ([tapType isEqualToString:@"copy"]) {
+        
         self.keyBordView.textField.text = chartCell.cellFrame.chartMessage.content;
         [self.keyBordView keyPressed:nil];
+        
     }else if ([tapType isEqualToString:@"back"]) {
-        self.keyBordView.textField.text = [NSString stringWithFormat:@"回复%@:",chartCell.cellFrame.chartMessage.name];
+        
+        self.keyBordView.textField.text = [NSString stringWithFormat:@"回复%@:",chartCell.cellFrame.chartMessage.userInfo.name];
+        self.keyBordView.isReturnBack = YES;
+        self.currentRtid = chartCell.cellFrame.chartMessage.mid;
+        
     }else if ([tapType isEqualToString:@"viewThread"]) {
+        
         if (self.threadView) {
             [self.threadView removeFromSuperview];
             self.threadView = nil;
         }
-        
+        /*
         self.threadView = [[[NSBundle mainBundle] loadNibNamed:@"ThreadView" owner:self
                                                       options:nil] objectAtIndex:0];
         [self.threadView.cancelBtn addTarget:self action:@selector(cancelThreadViewBtnAction:)
@@ -347,6 +410,7 @@ static NSString *const cellIdentifier=@"QQChart";
         
         self.threadView.dataArray = dataArray;
         [self.navigationController.view addSubview:self.threadView];
+         */
         
     }else if ([tapType isEqualToString:@"jubao"]) {
         //TODO:举报
@@ -405,24 +469,27 @@ static NSString *const cellIdentifier=@"QQChart";
 
 - (void)KeyBordView:(KeyBordVIew *)keyBoardView textFiledReturn:(UITextView *)textFiled
 {
-    ChartCellFrame *cellFrame=[[[ChartCellFrame alloc]init] autorelease];
-    ChartMessage *chartMessage=[[[ChartMessage alloc]init] autorelease];
+    NSString *stringToSend = [NSString stringWithFormat:@"%@", self.keyBordView.textField.text];
     
-    int random=arc4random_uniform(2);
-    NSLog(@"%d",random);
-    chartMessage.icon=[NSString stringWithFormat:@"icon%02d.jpg",random+1];
-    chartMessage.messageType=random;
-    chartMessage.content=textFiled.text;
-    cellFrame.chartMessage=chartMessage;
+    [self.view endEditing:YES];
+    self.keyBordView.textField.text = @"";
+    [self.keyBordView changeToolView:0];
     
-    [self.cellFrames addObject:cellFrame];
-    [self.tableView reloadData];
+    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/create"];
+    NSURL *url = [NSURL URLWithString:string];
+    ASIFormDataRequest *request = [[[ASIFormDataRequest alloc] initWithURL:url] autorelease];
+    [request setPostValue:stringToSend forKey:@"content"];
+    [request setPostValue:kCurrentUserID forKey:@"uid"];
+    [request setPostValue:self.topic forKey:@"topic"];
     
-    //滚动到当前行
+    if (self.keyBordView.isReturnBack) {
+        [request setPostValue:self.currentRtid forKey:@"rtid"];
+    }
     
-    [self tableViewScrollCurrentIndexPath];
-    textFiled.text=@"";
-    
+    request.delegate = self;
+    request.defaultResponseEncoding = NSUTF8StringEncoding;
+    request.userInfo = @{@"requestKind":@"Create Comment"};
+    [request startAsynchronous];
 }
 
 - (void)KeyBordView:(KeyBordVIew *)keyBoardView textFiledBegin:(UITextView *)textFiled
@@ -432,8 +499,12 @@ static NSString *const cellIdentifier=@"QQChart";
 
 - (void)tableViewScrollCurrentIndexPath
 {
-    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:self.cellFrames.count-1 inSection:0];
-    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    if (self.cellFrames.count == 0) {
+        return;
+    }else {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.cellFrames.count-1 inSection:0];
+        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    }
 }
 
 -(void)beginRecord
@@ -652,5 +723,62 @@ static NSString *const cellIdentifier=@"QQChart";
         [_accessoryView setAlpha:0.0f];
     }];
 }
+
+#pragma mark - ASIHTTPRequestDelegate
+
+- (void)requestFinished:(ASIHTTPRequest *)request
+{
+    NSString *responseString = [request responseString];
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData: [responseString dataUsingEncoding:NSUTF8StringEncoding]
+                                                         options: NSJSONReadingMutableContainers
+                                                           error:nil];
+    
+    if ([request.userInfo[@"requestKind"] isEqualToString:@"Create Comment"]) {
+        
+        ChartCellFrame *cellFrame = [[[ChartCellFrame alloc]init] autorelease];
+        ChartMessage *chartMessage = [[[ChartMessage alloc]init] autorelease];
+        chartMessage.dict = json;
+        cellFrame.chartMessage = chartMessage;
+        [self.cellFrames addObject:cellFrame];
+        
+        [self.tableView reloadData];
+        [self tableViewScrollCurrentIndexPath];
+        
+        
+    }else if ([request.userInfo[@"requestKind"] isEqualToString:@"List Comment"]) {
+        NSLog(@"!!!!!!!!!!  %@", responseString);
+        if ([[json objectForKey:@"comments"] count] == 0) {
+            return;
+        }
+        
+        for (NSDictionary *dict in [json objectForKey:@"comments"]) {
+            
+            ChartCellFrame *cellFrame = [[[ChartCellFrame alloc]init] autorelease];
+            ChartMessage *chartMessage = [[[ChartMessage alloc]init] autorelease];
+            chartMessage.dict = dict;
+            cellFrame.chartMessage = chartMessage;
+            [self.cellFrames addObject:cellFrame];
+            
+            NSLog(@"~~~~~~ %@", cellFrame.chartMessage.mid);
+        }
+        
+        if (self.cellFrames.count == 0) {
+            return;
+        }else {
+            _lastMid = ((ChartCellFrame *)[self.cellFrames lastObject]).chartMessage.mid;
+        }
+        
+        [self.tableView reloadData];
+        [self tableViewScrollCurrentIndexPath];
+    }
+}
+
+- (void)requestFailed:(ASIHTTPRequest *)request
+{
+    NSError *error = [request error];
+    
+    NSLog(@"%@", error);
+}
+
 
 @end
