@@ -38,7 +38,7 @@
     }
     _dict = [dict retain];
     
-    self.mid = dict[@"id"];
+    self.mid = [dict[@"id"] stringValue];
     self.time = dict[@"create_time"];
     self.content = dict[@"content"];
     self.topic = dict[@"topic"];

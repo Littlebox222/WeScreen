@@ -106,6 +106,7 @@
     //发送按钮
     self.sendBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [self.sendBtn setTitle:@"发送" forState:UIControlStateNormal];
+    [self.sendBtn setTintColor:[UIColor colorWithRed:228.0/255 green:79.0/255 blue:14.0/255 alpha:1]];
     [self.sendBtn addTarget:self action:@selector(sendBtnPress:) forControlEvents:UIControlEventTouchUpInside];
     [self.sendBtn setHidden:YES];
     [self addSubview:self.sendBtn];
@@ -114,7 +115,7 @@
 
 - (void)addConstraint
 {
-    
+    /*
     //给voicebutton添加约束
     self.voiceBtn.translatesAutoresizingMaskIntoConstraints = NO;
     NSArray *voiceConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_voiceBtn(27)]-10-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
@@ -156,49 +157,49 @@
     [self addConstraints:sendButtonConstraintH];
     NSArray *sendButtonConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_sendBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_sendBtn)];
     [self addConstraints:sendButtonConstraintV];
+    */
     
+    //给voicebutton添加约束
+    self.voiceBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *voiceConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(8)-[_voiceBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
+    [self addConstraints:voiceConstraintH];
+    NSArray *voiceConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(8)-[_voiceBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
+    [self addConstraints:voiceConstraintV];
+
+    //给MoreButton添加约束
+    self.addBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *moreButtonH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_addBtn(27)]-8-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_addBtn)];
+    [self addConstraints:moreButtonH];
+    NSArray *moreButtonV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_addBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_addBtn)];
+    [self addConstraints:moreButtonV];
+
+    //给imageButton添加约束
+    self.imageBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *imageButtonH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_imageBtn(27)]-45-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_imageBtn)];
+    [self addConstraints:imageButtonH];
+    NSArray *imageButtonV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_imageBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_imageBtn)];
+    [self addConstraints:imageButtonV];
     
-//    //给voicebutton添加约束
-//    self.voiceBtn.translatesAutoresizingMaskIntoConstraints = NO;
-//    NSArray *voiceConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(8)-[_voiceBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
-//    [self addConstraints:voiceConstraintH];
-//    NSArray *voiceConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(8)-[_voiceBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
-//    [self addConstraints:voiceConstraintV];
-//
-//    //给MoreButton添加约束
-//    self.addBtn.translatesAutoresizingMaskIntoConstraints = NO;
-//    NSArray *moreButtonH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_addBtn(27)]-8-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_addBtn)];
-//    [self addConstraints:moreButtonH];
-//    NSArray *moreButtonV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_addBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_addBtn)];
-//    [self addConstraints:moreButtonV];
-//
-//    //给imageButton添加约束
-//    self.imageBtn.translatesAutoresizingMaskIntoConstraints = NO;
-//    NSArray *imageButtonH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_imageBtn(27)]-45-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_imageBtn)];
-//    [self addConstraints:imageButtonH];
-//    NSArray *imageButtonV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_imageBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_imageBtn)];
-//    [self addConstraints:imageButtonV];
-//    
-//    //给文本框添加约束
-//    self.textField.translatesAutoresizingMaskIntoConstraints = NO;
-//    NSArray *sendTextViewConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-45-[_textField]-80-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_textField)];
-//    [self addConstraints:sendTextViewConstraintH];
-//    NSArray *sendTextViewConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[_textField]-5-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_textField)];
-//    [self addConstraints:sendTextViewConstraintV];
-//    
-//    //给提示框加约束
-//    self.tipView.translatesAutoresizingMaskIntoConstraints = NO;
-//    NSArray *sendTipViewConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-45-[_tipView]-45-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_tipView)];
-//    [self addConstraints:sendTipViewConstraintH];
-//    NSArray *sendTipViewConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[_tipView]-8-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_tipView)];
-//    [self addConstraints:sendTipViewConstraintV];
-//    
-//    //给发送按钮加约束
-//    self.sendBtn.translatesAutoresizingMaskIntoConstraints = NO;
-//    NSArray *sendButtonConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_sendBtn(54)]-15-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_sendBtn)];
-//    [self addConstraints:sendButtonConstraintH];
-//    NSArray *sendButtonConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_sendBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_sendBtn)];
-//    [self addConstraints:sendButtonConstraintV];
+    //给文本框添加约束
+    self.textField.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *sendTextViewConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-45-[_textField]-80-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_textField)];
+    [self addConstraints:sendTextViewConstraintH];
+    NSArray *sendTextViewConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[_textField]-5-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_textField)];
+    [self addConstraints:sendTextViewConstraintV];
+    
+    //给提示框加约束
+    self.tipView.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *sendTipViewConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-45-[_tipView]-45-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_tipView)];
+    [self addConstraints:sendTipViewConstraintH];
+    NSArray *sendTipViewConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[_tipView]-8-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_tipView)];
+    [self addConstraints:sendTipViewConstraintV];
+    
+    //给发送按钮加约束
+    self.sendBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *sendButtonConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_sendBtn(54)]-15-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_sendBtn)];
+    [self addConstraints:sendButtonConstraintH];
+    NSArray *sendButtonConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_sendBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_sendBtn)];
+    [self addConstraints:sendButtonConstraintV];
 }
 
 - (void)changeToolView:(NSInteger)state {

@@ -73,7 +73,7 @@
         self.likeButton.frame = cellFrame.likeRect;
         [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(7, -20, 0, 0)];
         [self.likeButton setImageEdgeInsets:UIEdgeInsetsMake(0, -7, 0, 33)];
-        
+        [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", chartMessage.likeNum] forState:UIControlStateNormal];
         [self.likeButton setAlpha:1];
         [self.userNameLabel setAlpha:1];
     }else {
@@ -193,11 +193,7 @@
 }
 
 - (void)like:(id)sender {
-    UIImage *likeImage = [UIImage imageNamed:@"like_highlighted.png"];
-    [self.likeButton setImage:likeImage forState:UIControlStateNormal];
-    [self.likeButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     
-    /*
     NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/like?uid=%@&cid=%@", kCurrentUserID, self.chartView.chartMessage.mid];
     NSURL *url = [NSURL URLWithString:string];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
@@ -205,7 +201,6 @@
     request.defaultResponseEncoding = NSUTF8StringEncoding;
     request.delegate = self;
     [request startAsynchronous];
-     */
 }
 
 #pragma mark - ASIHTTPRequestDelegate
@@ -218,7 +213,15 @@
                                                          options: NSJSONReadingMutableContainers
                                                            error:nil];
     
-    NSLog(@"%@", responseString);
+    if ([[json objectForKey:@"count"] integerValue] != -1) {
+        
+        UIImage *likeImage = [UIImage imageNamed:@"like_highlighted.png"];
+        [self.likeButton setImage:likeImage forState:UIControlStateNormal];
+        [self.likeButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.likeButton setTitle:[[json objectForKey:@"count"] stringValue] forState:UIControlStateNormal];
+        [self.likeButton setUserInteractionEnabled:NO];
+    }
+    
 }
 
 - (void)requestFailed:(ASIHTTPRequest *)request

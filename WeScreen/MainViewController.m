@@ -13,7 +13,6 @@
 #import "ChartCell.h"
 #import "KeyBordVIew.h"
 
-#import "CardViewController.h"
 #import "PopoverView.h"
 #import "MenuView.h"
 
@@ -125,13 +124,13 @@ static NSString *const cellIdentifier=@"QQChart";
     [super viewWillAppear:animated];
     
     //TODO:拉数据
-    /*
-    _requestTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+    
+    _requestTimer = [NSTimer scheduledTimerWithTimeInterval:2.0
                                                      target:self
                                                    selector:@selector(requestForListComments)
                                                    userInfo:nil
-                                                    repeats:NO];
-     */
+                                                    repeats:YES];
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -154,16 +153,15 @@ static NSString *const cellIdentifier=@"QQChart";
 }
 
 - (void)requestForListComments {
-    
-    NSLog(@"============== %@", _lastMid);
-    
-    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/list?topic=%@&sinceId=0&count=15", [self.topic urlencode]];
+
+    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/list?topic=%@&sinceId=%@&count=15", [self.topic urlencode], _lastMid];
     NSURL *url = [NSURL URLWithString:string];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setRequestMethod:@"GET"];
     request.defaultResponseEncoding = NSUTF8StringEncoding;
     request.delegate = self;
     request.userInfo = @{@"requestKind":@"List Comment"};
+    
     [request startAsynchronous];
 }
 
@@ -191,6 +189,11 @@ static NSString *const cellIdentifier=@"QQChart";
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+    
+    
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -273,7 +276,8 @@ static NSString *const cellIdentifier=@"QQChart";
     
     //初始化数据
     //[self initwithData];
-    _lastMid = @"0";
+    _lastMid = [[NSString alloc] init];
+    [self setLastMid:@"0"];
     
     //
     _iFlySpeechRecognizer = [RecognizerFactory CreateRecognizer:self Domain:@"iat"];
@@ -284,35 +288,38 @@ static NSString *const cellIdentifier=@"QQChart";
 
 -(void)initwithData
 {
-    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/list?topic=%@&sinceId=0&count=15", [self.topic urlencode]];
-    NSURL *url = [NSURL URLWithString:string];
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-    [request setRequestMethod:@"GET"];
-    request.defaultResponseEncoding = NSUTF8StringEncoding;
-    request.delegate = self;
-    request.userInfo = @{@"requestKind":@"List Comment"};
-    [request startAsynchronous];
-
-
-//    //NSString *s = [NSString stringWithFormat:@"想说啥就说啥呗"];
-//    NSString *s = [NSString stringWithFormat:@"别闹了，你俩快点睡觉"];
-//    
-//    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/create"];
+//    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/list?topic=%@&sinceId=0&count=15", [self.topic urlencode]];
 //    NSURL *url = [NSURL URLWithString:string];
-//    ASIFormDataRequest *request = [[ASIFormDataRequest alloc] initWithURL:url];
-//    [request setPostValue:s forKey:@"content"];
-//    //[request setPostValue:@"3775796348452870" forKey:@"uid"];
-//    [request setPostValue:@"3775796952432647" forKey:@"uid"];
-//    [request setPostValue:self.topic forKey:@"topic"];
-//    request.delegate = self;
+//    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+//    [request setRequestMethod:@"GET"];
 //    request.defaultResponseEncoding = NSUTF8StringEncoding;
+//    request.delegate = self;
+//    request.userInfo = @{@"requestKind":@"List Comment"};
 //    [request startAsynchronous];
+
+
+    NSString *s = [NSString stringWithFormat:@"想说啥就说啥呗"];
+    //NSString *s = [NSString stringWithFormat:@"别闹了，你俩快点睡觉"];
+    //NSString *s = [NSString stringWithFormat:@"就不睡觉，爱谁谁"];
+    //NSString *s = [NSString stringWithFormat:@"那我们起床打麻将吧！"];
+    //NSString *s = [NSString stringWithFormat:@"好啊好啊，刚好三缺一~~"];
+    
+    
+    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/create"];
+    NSURL *url = [NSURL URLWithString:string];
+    ASIFormDataRequest *request = [[[ASIFormDataRequest alloc] initWithURL:url] autorelease];
+    [request setPostValue:s forKey:@"content"];
+    [request setPostValue:kUser1 forKey:@"uid"];
+    [request setPostValue:self.topic forKey:@"topic"];
+    request.delegate = self;
+    request.defaultResponseEncoding = NSUTF8StringEncoding;
+    [request startAsynchronous];
 }
 
 - (void)selectRightAction:(id)sender
 {
-    CardViewController *cardViewController = [[[CardViewController alloc] init] autorelease];
-    [self.navigationController pushViewController:cardViewController animated:NO];
+//    CardViewController *cardViewController = [[[CardViewController alloc] init] autorelease];
+//    [self.navigationController pushViewController:cardViewController animated:NO];
 }
 
 #pragma mark - TableView
@@ -746,26 +753,31 @@ static NSString *const cellIdentifier=@"QQChart";
         
         
     }else if ([request.userInfo[@"requestKind"] isEqualToString:@"List Comment"]) {
-        NSLog(@"!!!!!!!!!!  %@", responseString);
+
         if ([[json objectForKey:@"comments"] count] == 0) {
             return;
         }
         
+        NSArray *commentArray = [json objectForKey:@"comments"];
+        NSDictionary *commentDict = [commentArray lastObject];
+        NSString *mid = [[commentDict objectForKey:@"id"] stringValue];
+        if (![mid isKindOfClass:[NSString class]]) {
+            return;
+        }
+        
+        if ([_lastMid isEqualToString:mid]) {
+            return;
+        }else {
+            [self setLastMid:mid];
+        }
+        
         for (NSDictionary *dict in [json objectForKey:@"comments"]) {
             
-            ChartCellFrame *cellFrame = [[[ChartCellFrame alloc]init] autorelease];
-            ChartMessage *chartMessage = [[[ChartMessage alloc]init] autorelease];
+            ChartCellFrame *cellFrame = [[[ChartCellFrame alloc] init] autorelease];
+            ChartMessage *chartMessage = [[[ChartMessage alloc] init] autorelease];
             chartMessage.dict = dict;
             cellFrame.chartMessage = chartMessage;
             [self.cellFrames addObject:cellFrame];
-            
-            NSLog(@"~~~~~~ %@", cellFrame.chartMessage.mid);
-        }
-        
-        if (self.cellFrames.count == 0) {
-            return;
-        }else {
-            _lastMid = ((ChartCellFrame *)[self.cellFrames lastObject]).chartMessage.mid;
         }
         
         [self.tableView reloadData];
