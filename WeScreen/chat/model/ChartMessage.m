@@ -48,6 +48,10 @@
     
     if ([self.userInfo.uid isEqualToString:kCurrentUserID]) {
         self.messageType = kMessageTo;
+    }else if ([self.userInfo.uid isEqualToString:kCardVote]) {
+        self.messageType = kMessageCardVote;
+    }else if ([self.userInfo.uid isEqualToString:kCardShop]) {
+        self.messageType = kMessageCardShop;
     }else {
         self.messageType = kMessageFrom;
     }

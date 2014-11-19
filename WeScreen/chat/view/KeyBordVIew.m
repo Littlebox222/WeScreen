@@ -6,6 +6,7 @@
 //  Copyright (c) 2014年 zzy. All rights reserved.
 //
 #import <QuartzCore/QuartzCore.h>
+#import <AudioToolbox/AudioToolbox.h>
 #import "KeyBordVIew.h"
 #import "ChartMessage.h"
 #import "ChartCellFrame.h"
@@ -69,7 +70,20 @@
 
     //麦克风
     UIImage *image = [UIImage imageNamed:@"chat_bottom_voice_nor.png"];
+    
+    image = [UIImage imageWithCGImage:[image CGImage] scale:1.7 orientation:UIImageOrientationUp];
+    
+//    CGRect rect = CGRectMake(0, 0, 27, 27);
+//    UIGraphicsBeginImageContext( rect.size );
+//    [image drawInRect:rect];
+//    UIImage *picture1 = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//    NSData *imageData = UIImagePNGRepresentation(picture1);
+//    UIImage *img=[UIImage imageWithData:imageData];
+    
     self.voiceBtn = [[UIImageView alloc] initWithImage:image];
+//    self.voiceBtn.backgroundColor = [UIColor redColor];
+    [self.voiceBtn setContentMode:UIViewContentModeCenter];
     [self.voiceBtn setUserInteractionEnabled:YES];
 
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
@@ -98,7 +112,7 @@
     [self.tipView setBackgroundColor:[UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1]];
     [self.tipView setHidden:YES];
     [self.tipView setTextAlignment:NSTextAlignmentCenter];
-    [self.tipView setText:@"向左滑动取消"];
+    [self.tipView setText:@"向右滑动取消"];
     [self.tipView setFont:[UIFont systemFontOfSize:18]];
     [self.tipView setTextColor:[UIColor grayColor]];
     [self addSubview:self.tipView];
@@ -115,55 +129,11 @@
 
 - (void)addConstraint
 {
-    /*
     //给voicebutton添加约束
     self.voiceBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    NSArray *voiceConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_voiceBtn(27)]-10-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
+    NSArray *voiceConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(-5)-[_voiceBtn(60)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
     [self addConstraints:voiceConstraintH];
-    NSArray *voiceConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_voiceBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
-    [self addConstraints:voiceConstraintV];
-    
-    //给MoreButton添加约束
-    self.addBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    NSArray *moreButtonH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-45-[_addBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_addBtn)];
-    [self addConstraints:moreButtonH];
-    NSArray *moreButtonV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_addBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_addBtn)];
-    [self addConstraints:moreButtonV];
-    
-    //给imageButton添加约束
-    self.imageBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    NSArray *imageButtonH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[_imageBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_imageBtn)];
-    [self addConstraints:imageButtonH];
-    NSArray *imageButtonV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_imageBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_imageBtn)];
-    [self addConstraints:imageButtonV];
-    
-    //给文本框添加约束
-    self.textField.translatesAutoresizingMaskIntoConstraints = NO;
-    NSArray *sendTextViewConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-80-[_textField]-45-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_textField)];
-    [self addConstraints:sendTextViewConstraintH];
-    NSArray *sendTextViewConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[_textField]-5-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_textField)];
-    [self addConstraints:sendTextViewConstraintV];
-    
-    //给提示框加约束
-    self.tipView.translatesAutoresizingMaskIntoConstraints = NO;
-    NSArray *sendTipViewConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-45-[_tipView]-45-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_tipView)];
-    [self addConstraints:sendTipViewConstraintH];
-    NSArray *sendTipViewConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[_tipView]-8-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_tipView)];
-    [self addConstraints:sendTipViewConstraintV];
-    
-    //给发送按钮加约束
-    self.sendBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    NSArray *sendButtonConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[_sendBtn(54)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_sendBtn)];
-    [self addConstraints:sendButtonConstraintH];
-    NSArray *sendButtonConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_sendBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_sendBtn)];
-    [self addConstraints:sendButtonConstraintV];
-    */
-    
-    //给voicebutton添加约束
-    self.voiceBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    NSArray *voiceConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(8)-[_voiceBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
-    [self addConstraints:voiceConstraintH];
-    NSArray *voiceConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(8)-[_voiceBtn(27)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
+    NSArray *voiceConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(-15)-[_voiceBtn(70)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
     [self addConstraints:voiceConstraintV];
 
     //给MoreButton添加约束
@@ -233,8 +203,8 @@
 - (void)voiceBtnTapped {
     
     NSLog(@"voice button tapped");
-    UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:@"按住语音输入" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles: nil];
-    [alter show];
+//    UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:@"按住语音输入" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles: nil];
+//    [alter show];
 }
 
 - (void)handleLongPressGestures:(UILongPressGestureRecognizer *)sender{
@@ -252,6 +222,8 @@
             i = 1;
             
             if (self.delegate && [self.delegate respondsToSelector:@selector(beginRecord)]) {
+                
+                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
                 
                 iTime = [[NSDate date] timeIntervalSince1970];
                 [self.delegate beginRecord];
@@ -300,8 +272,8 @@
                         [self.delegate cancelRecord];
                     }
                     [self changeToolView:0];
-                    UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:@"录音时间太短！" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles: nil];
-                    [alter show];
+//                    UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:@"录音时间太短！" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles: nil];
+//                    [alter show];
                 }
             }
         }

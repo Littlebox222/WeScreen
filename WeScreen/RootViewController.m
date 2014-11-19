@@ -180,6 +180,7 @@
     double time = 0;
     
     if (json) {
+        //topic = @"爸爸去哪儿-1";
         topic = [json objectForKey:@"topic"];
         time = [[json objectForKey:@"time"] doubleValue];
         self.prob = [[json objectForKey:@"score"] doubleValue];

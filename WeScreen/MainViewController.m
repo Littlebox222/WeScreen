@@ -57,6 +57,7 @@ static NSString *const cellIdentifier=@"QQChart";
 @property (strong, nonatomic) NSLayoutConstraint *keyBordViewConstraintHeight;
 
 @property (strong, nonatomic) NSTimer *requestTimer;
+@property (strong, nonatomic) NSTimer *cardTimer;
 @property (strong, nonatomic) NSString *lastMid;
 @property (strong, nonatomic) NSString *currentRtid;
 
@@ -76,6 +77,11 @@ static NSString *const cellIdentifier=@"QQChart";
     if( _requestTimer != nil ){
         [_requestTimer invalidate];
         _requestTimer = nil;
+    }
+    
+    if (_cardTimer != nil) {
+        [_cardTimer invalidate];
+        _cardTimer = nil;
     }
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -131,6 +137,12 @@ static NSString *const cellIdentifier=@"QQChart";
                                                    userInfo:nil
                                                     repeats:YES];
     
+    _cardTimer = [[NSTimer scheduledTimerWithTimeInterval:5.0
+                                                  target:self
+                                                selector:@selector(insertCard)
+                                                userInfo:nil
+                                                 repeats:NO] retain];
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -149,6 +161,11 @@ static NSString *const cellIdentifier=@"QQChart";
         _requestTimer = nil;
     }
     
+    if( _cardTimer != nil && [_cardTimer isKindOfClass:[NSTimer class]] && [_cardTimer isValid]) {
+        [_cardTimer invalidate];
+        _cardTimer = nil;
+    }
+    
     [super viewWillDisappear:animated];
 }
 
@@ -163,6 +180,30 @@ static NSString *const cellIdentifier=@"QQChart";
     request.userInfo = @{@"requestKind":@"List Comment"};
     
     [request startAsynchronous];
+}
+
+- (void)insertCard {
+    
+    ChartCellFrame *cellFrame = [[[ChartCellFrame alloc] init] autorelease];
+    ChartMessage *chartMessage = [[[ChartMessage alloc] init] autorelease];
+    
+    
+    NSDictionary *dict = @{@"id":@0,
+                           @"create_time":@"123",
+                           @"content":@"ss",
+                           @"topic":@"aa",
+                           @"like":@"0",
+                           @"user":@{@"name":@"a",
+                                     //@"id":@(random() % 2),
+                                     @"id":@0,
+                                     @"icon":@"",
+                                     @"icon_url":@""}};
+    
+    chartMessage.dict = [dict retain];
+    cellFrame.chartMessage = chartMessage;
+    [self.cellFrames addObject:cellFrame];
+    
+    [self.tableView reloadData];
 }
 
 #pragma mark - keyboard
@@ -746,11 +787,11 @@ static NSString *const cellIdentifier=@"QQChart";
         ChartMessage *chartMessage = [[[ChartMessage alloc]init] autorelease];
         chartMessage.dict = json;
         cellFrame.chartMessage = chartMessage;
+        [self setLastMid:[[json objectForKey:@"id"] stringValue]];
         [self.cellFrames addObject:cellFrame];
         
         [self.tableView reloadData];
         [self tableViewScrollCurrentIndexPath];
-        
         
     }else if ([request.userInfo[@"requestKind"] isEqualToString:@"List Comment"]) {
 

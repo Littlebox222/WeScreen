@@ -11,8 +11,10 @@
 
 typedef enum {
   
-    kMessageFrom=0,
-    kMessageTo
+    kMessageFrom = 0,
+    kMessageTo,
+    kMessageCardVote,
+    kMessageCardShop
  
 }ChartMessageType;
 

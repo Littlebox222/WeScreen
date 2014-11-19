@@ -9,6 +9,7 @@
 #import "ChartCell.h"
 #import "ChartContentView.h"
 #import "AppDelegate.h"
+#import "CardView.h"
 
 @interface ChartCell()<ChartContentViewDelegate>
 @property (nonatomic,strong) UIImageView *icon;
@@ -19,6 +20,9 @@
 @property (nonatomic,strong) NSString *userName;
 @property (nonatomic) NSInteger likeNum;
 @property (nonatomic,strong) UIButton *likeButton;
+
+@property (nonatomic,strong) CardView *cardView;
+
 @end
 
 @implementation ChartCell
@@ -28,26 +32,6 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        self.icon=[[UIImageView alloc]init];
-        [self.contentView addSubview:self.icon];
-        self.chartView =[[ChartContentView alloc]initWithFrame:CGRectZero];
-        self.chartView.delegate=self;
-        [self.contentView addSubview:self.chartView];
-        
-        self.userNameLabel = [[UILabel alloc] init];
-        self.userNameLabel.font = [UIFont systemFontOfSize:10];
-        [self.contentView addSubview:self.userNameLabel];
-        
-        self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *likeImage = [UIImage imageNamed:@"like.png"];
-        [self.likeButton setImage:likeImage forState:UIControlStateNormal];
-        [self.likeButton setBackgroundColor:[UIColor clearColor]];
-        [self.likeButton addTarget:self action:@selector(like:) forControlEvents:UIControlEventTouchUpInside];
-        [self.likeButton setTitle:@"" forState:UIControlStateNormal];
-        [self.likeButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [self.likeButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
-        
-        [self.contentView addSubview:self.likeButton];
     }
     return self;
 }
@@ -56,49 +40,156 @@
    
     _cellFrame = cellFrame;
     
-    ChartMessage *chartMessage = cellFrame.chartMessage;
     
-    self.icon.frame = cellFrame.iconRect;
-    self.icon.image = [UIImage imageNamed:chartMessage.userInfo.iconUrl];
-    
-    self.userNameLabel.frame = cellFrame.nameRect;
-    self.userNameLabel.text = chartMessage.userInfo.name;
-   
-    self.chartView.chartMessage = chartMessage;
-    self.chartView.frame = cellFrame.chartViewRect;
-    [self setBackGroundImageViewImage:self.chartView from:@"chatfrom_bg_normal@2x.png" to:@"chatto_bg_normal@2x.png"];
-    self.chartView.contentLabel.text = chartMessage.content;
-    
-    if (cellFrame.chartMessage.messageType == kMessageFrom) {
-        self.likeButton.frame = cellFrame.likeRect;
-        [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(7, -20, 0, 0)];
-        [self.likeButton setImageEdgeInsets:UIEdgeInsetsMake(0, -7, 0, 33)];
-        [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", chartMessage.likeNum] forState:UIControlStateNormal];
-        [self.likeButton setAlpha:1];
-        [self.userNameLabel setAlpha:1];
+    if (cellFrame.chartMessage.messageType == kMessageCardVote || cellFrame.chartMessage.messageType == kMessageCardShop) {
+        
+        [self.icon setHidden:YES];
+        [self.userNameLabel setHidden:YES];
+        [self.likeButton setHidden:YES];
+        [self.chartView setHidden:YES];
+        [self.cardView setHidden:NO];
+
+        if (self.cardView == nil) {
+            
+            NSString *type = kCardTypeVote;
+            if (cellFrame.chartMessage.messageType == kMessageCardShop) {
+                type = kCardTypeShop;
+            }
+            
+            self.cardView = [[CardView alloc] initWithFrame:cellFrame.chartViewRect type:type];
+            [self.contentView addSubview:self.cardView];
+        }else {
+            self.cardView.frame = cellFrame.chartViewRect;
+            //NSLog(@"%@", NSStringFromCGRect(self.cardView.frame));
+        }
+        
     }else {
-        self.likeButton.frame = CGRectZero;
-        [self.userNameLabel setAlpha:0];
-        [self.likeButton setAlpha:0];
+        
+        [self.cardView setHidden:YES];
+        [self.icon setHidden:NO];
+        [self.userNameLabel setHidden:NO];
+        [self.likeButton setHidden:NO];
+        [self.chartView setHidden:NO];
+        
+        ChartMessage *chartMessage = cellFrame.chartMessage;
+        
+        if (self.icon == nil) {
+            self.icon = [[UIImageView alloc] init];
+            self.icon.frame = cellFrame.iconRect;
+            self.icon.image = [UIImage imageNamed:chartMessage.userInfo.iconUrl];
+            [self.contentView addSubview:self.icon];
+        }else {
+            self.icon.frame = cellFrame.iconRect;
+            self.icon.image = [UIImage imageNamed:chartMessage.userInfo.iconUrl];
+        }
+        
+        
+        if (self.userNameLabel == nil) {
+            self.userNameLabel = [[UILabel alloc] init];
+            self.userNameLabel.font = [UIFont systemFontOfSize:10];
+            self.userNameLabel.frame = cellFrame.nameRect;
+            self.userNameLabel.text = chartMessage.userInfo.name;
+            [self.contentView addSubview:self.userNameLabel];
+        }else {
+            self.userNameLabel.frame = cellFrame.nameRect;
+            self.userNameLabel.text = chartMessage.userInfo.name;
+        }
+        
+        
+        if (self.chartView == nil) {
+            self.chartView = [[ChartContentView alloc] initWithFrame:CGRectZero];
+            self.chartView.chartMessage = chartMessage;
+            self.chartView.frame = cellFrame.chartViewRect;
+            [self setBackGroundImageViewImage:self.chartView from:@"chatfrom_bg_normal@2x.png" to:@"chatto_bg_normal@2x.png"];
+            self.chartView.contentLabel.text = chartMessage.content;
+            self.chartView.delegate = self;
+            [self.contentView addSubview:self.chartView];
+        }else {
+            self.chartView.chartMessage = chartMessage;
+            self.chartView.frame = cellFrame.chartViewRect;
+            [self setBackGroundImageViewImage:self.chartView from:@"chatfrom_bg_normal@2x.png" to:@"chatto_bg_normal@2x.png"];
+            self.chartView.contentLabel.text = chartMessage.content;
+        }
+        
+        
+        
+        if (cellFrame.chartMessage.messageType == kMessageFrom) {
+            
+            
+            if (self.likeButton == nil) {
+                self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                UIImage *likeImage = [UIImage imageNamed:@"like.png"];
+                [self.likeButton setImage:likeImage forState:UIControlStateNormal];
+                [self.likeButton setBackgroundColor:[UIColor clearColor]];
+                [self.likeButton addTarget:self action:@selector(like:) forControlEvents:UIControlEventTouchUpInside];
+                [self.likeButton setTitle:@"" forState:UIControlStateNormal];
+                [self.likeButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+                [self.likeButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
+                [self.contentView addSubview:self.likeButton];
+                
+                self.likeButton.frame = cellFrame.likeRect;
+                [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(7, -20, 0, 0)];
+                [self.likeButton setImageEdgeInsets:UIEdgeInsetsMake(0, -7, 0, 33)];
+                
+                if (chartMessage.likeNum != 0) {
+                    [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", chartMessage.likeNum] forState:UIControlStateNormal];
+                }
+                [self.likeButton setAlpha:1];
+            }else {
+                
+                self.likeButton.frame = cellFrame.likeRect;
+                [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(7, -20, 0, 0)];
+                [self.likeButton setImageEdgeInsets:UIEdgeInsetsMake(0, -7, 0, 33)];
+                if (chartMessage.likeNum != 0) {
+                    [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", chartMessage.likeNum] forState:UIControlStateNormal];
+                }
+                
+                [self.likeButton setAlpha:1];
+                
+                if (![self.likeButton isUserInteractionEnabled]) {
+                    UIImage *likeImage = [UIImage imageNamed:@"like_highlighted.png"];
+                    [self.likeButton setImage:likeImage forState:UIControlStateNormal];
+                }
+            }
+            [self.userNameLabel setAlpha:1];
+            
+        }else {
+            
+            if (self.likeButton == nil) {
+                
+                self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                UIImage *likeImage = [UIImage imageNamed:@"like.png"];
+                [self.likeButton setImage:likeImage forState:UIControlStateNormal];
+                [self.likeButton setBackgroundColor:[UIColor clearColor]];
+                [self.likeButton addTarget:self action:@selector(like:) forControlEvents:UIControlEventTouchUpInside];
+                [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", [chartMessage likeNum]] forState:UIControlStateNormal];
+                [self.likeButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+                [self.likeButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
+                [self.contentView addSubview:self.likeButton];
+                
+                self.likeButton.frame = CGRectZero;
+                [self.likeButton setAlpha:0];
+                
+            }else {
+                
+                self.likeButton.frame = CGRectZero;
+                [self.likeButton setAlpha:0];
+            }
+            [self.userNameLabel setAlpha:0];
+        }
     }
 }
 -(void)setBackGroundImageViewImage:(ChartContentView *)chartView from:(NSString *)from to:(NSString *)to
 {
     UIImage *normal=nil ;
     if(chartView.chartMessage.messageType==kMessageFrom){
-        
         normal = [UIImage imageNamed:from];
         normal = [normal stretchableImageWithLeftCapWidth:normal.size.width * 0.5 topCapHeight:normal.size.height * 0.75];
-//        UIEdgeInsets insets = UIEdgeInsetsMake(54, 21, 11, 12);
-//        [normal resizableImageWithCapInsets:insets resizingMode:UIImageResizingModeStretch];
-        //NSLog(@"(%.0f, %.0f", normal.size.width * 0.2, normal.size.height * 0.9);
-        
     }else if(chartView.chartMessage.messageType==kMessageTo){
-        
         normal = [UIImage imageNamed:to];
         normal = [normal stretchableImageWithLeftCapWidth:normal.size.width * 0.5 topCapHeight:normal.size.height * 0.75];
     }
-    chartView.backImageView.image=normal;
+    chartView.backImageView.image = normal;
 }
 -(void)chartContentViewLongPress:(ChartContentView *)chartView content:(NSString *)content
 {
@@ -123,8 +214,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuShow:) name:UIMenuControllerWillShowMenuNotification object:nil];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuHide:) name:UIMenuControllerWillHideMenuNotification object:nil];
-    self.contentStr=content;
-    self.currentChartView=chartView;
+    self.contentStr = content;
+    self.currentChartView = chartView;
 }
 
 -(BOOL)canBecomeFirstResponder
@@ -220,6 +311,8 @@
         [self.likeButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
         [self.likeButton setTitle:[[json objectForKey:@"count"] stringValue] forState:UIControlStateNormal];
         [self.likeButton setUserInteractionEnabled:NO];
+        
+        _cellFrame.chartMessage.likeNum = [[json objectForKey:@"count"] integerValue];
     }
     
 }
