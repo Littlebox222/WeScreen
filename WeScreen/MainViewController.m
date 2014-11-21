@@ -73,6 +73,7 @@ static NSString *const cellIdentifier=@"QQChart";
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations) {
         [req cancel];
         [req setDelegate:nil];
+        req = nil;
     }
     
     if( _requestTimer != nil ){

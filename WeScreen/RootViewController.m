@@ -25,6 +25,7 @@
     AVAudioRecorder *recorder;
     NSTimer *timer;
     NSURL *urlPlay;
+    BOOL canceled;
 }
 
 @property (nonatomic, retain) PulsingLayer *pulsingLayer;
@@ -33,7 +34,7 @@
 @property (nonatomic, retain) LCVoice * voice;
 @property (nonatomic, assign) double prob;
 @property (nonatomic, assign) int baseTime;
-
+@property (nonatomic, retain) ASIFormDataRequest *request;
 @end
 
 @implementation RootViewController
@@ -42,6 +43,11 @@
 @synthesize prob = _prob;
 
 - (void)dealloc {
+    
+    [_request cancel];
+    _request.delegate = nil;
+    _request = nil;
+    
     [_voice release];
     [super dealloc];
 }
@@ -66,9 +72,23 @@
     adView2.image = [UIImage imageNamed:@"search_2.png"];
     adView2.contentMode = UIViewContentModeScaleAspectFill;
     [self.view addSubview:adView2];
+    
+    UIButton *button1 = [UIButton buttonWithType:UIButtonTypeSystem];
+    button1.frame = CGRectMake(0, self.view.frame.size.height - 75, self.view.frame.size.width/2, 30);
+    [button1 addTarget:self action:@selector(button1Pressed:) forControlEvents:UIControlEventTouchUpInside];
+    button1.alpha = 1;
+    [self.view addSubview:button1];
+    
+    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeSystem];
+    button2.frame = CGRectMake(0, self.view.frame.size.height - 45, self.view.frame.size.width/2, 30);
+    [button2 addTarget:self action:@selector(button2Pressed:) forControlEvents:UIControlEventTouchUpInside];
+    button2.alpha = 1;
+    [self.view addSubview:button2];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    
+    canceled = NO;
     
     CGRect rect=[UIScreen mainScreen].applicationFrame;
     
@@ -118,18 +138,24 @@
         
         if (self.voice.recordTime > 0.0f) {
             
-            NSLog(@"%@", self.voice.recordPath);
+            //NSLog(@"%@", self.voice.recordPath);
             
             //TODO:上传音频
+            
+            if (self.request!=nil) {
+                [_request cancel];
+                [_request setDelegate:nil];
+                self.request = nil;
+            }
             
 //            NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/topic/rec"];
             NSString *string = [NSString stringWithFormat:@"http://123.125.104.152/topic/rec"];
             NSURL *url = [NSURL URLWithString:string];
-            ASIFormDataRequest *request = [[[ASIFormDataRequest alloc] initWithURL:url] autorelease];
-            [request setFile: [NSString stringWithFormat:@"%@", self.voice.recordPath] forKey:@"audio"];
-            request.delegate = self;
-            request.defaultResponseEncoding = NSUTF8StringEncoding;
-            [request startAsynchronous];
+            self.request = [[[ASIFormDataRequest alloc] initWithURL:url] autorelease];
+            [self.request setFile: [NSString stringWithFormat:@"%@", self.voice.recordPath] forKey:@"audio"];
+            self.request.delegate = self;
+            self.request.defaultResponseEncoding = NSUTF8StringEncoding;
+            [self.request startAsynchronous];
         }
         
     }];
@@ -173,6 +199,51 @@
     [self.navigationController pushViewController:mainViewController animated:YES];
 }
 
+- (void)button1Pressed:(UIButton *)button {
+    
+    [self.voice stopRecordWithCompletionBlock:^{
+        
+        if (self.request!=nil) {
+            [_request cancel];
+            [_request setDelegate:nil];
+            self.request = nil;
+        }
+        
+        canceled = YES;
+        
+        [self.pulsingLayer removeAllAnimations];
+        [self.pulsingLayer removeFromSuperlayer];
+        [self.arcLayer removeAllAnimations];
+        [self.arcLayer removeFromSuperlayer];
+        
+        MainViewController *mainViewController = [[[MainViewController alloc] init] autorelease];
+        mainViewController.topic = @"爸爸去哪儿";
+        [self.navigationController pushViewController:mainViewController animated:YES];
+    }];
+}
+
+- (void)button2Pressed:(UIButton *)button {
+    
+    [self.voice stopRecordWithCompletionBlock:^{
+        
+        if (self.request!=nil) {
+            [_request cancel];
+            [_request setDelegate:nil];
+            self.request = nil;
+        }
+        
+        canceled = YES;
+    
+        [self.pulsingLayer removeAllAnimations];
+        [self.pulsingLayer removeFromSuperlayer];
+        [self.arcLayer removeAllAnimations];
+        [self.arcLayer removeFromSuperlayer];
+        
+        MainViewController *mainViewController = [[[MainViewController alloc] init] autorelease];
+        mainViewController.topic = @"奔跑吧兄弟";
+        [self.navigationController pushViewController:mainViewController animated:YES];
+    }];
+}
 
 #pragma mark - ASIHTTPRequestDelegate
 
@@ -195,7 +266,7 @@
         NSLog(@"\n*********** %@ \n~~~~~~~~~~~ %f \n=========== %f", topic, time, self.prob);
     }
     
-    if (self.prob > 0.15) {
+    if (self.prob > 0.15 && !canceled) {
         [self showViewWithTopic:topic];
     }else {
         
