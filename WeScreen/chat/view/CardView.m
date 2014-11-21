@@ -102,7 +102,8 @@ NSString *kCardTypeShop = @"cardShop";
                     
                     if (![c isEqual:cell]) {
                         [c.supportButton setEnabled:NO];
-                        [c.supportButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+                        [c.supportButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                        [c.supportButton.titleLabel setFont:[UIFont systemFontOfSize:15]];
                     }else {
                         [c.supportButton setEnabled:NO];
                         [c.supportButton setTitle:@"已支持" forState:UIControlStateNormal];
@@ -118,7 +119,8 @@ NSString *kCardTypeShop = @"cardShop";
 //                request.defaultResponseEncoding = NSUTF8StringEncoding;
 //                [request startAsynchronous];
                 
-                NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/card/vote"];
+//                NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/card/vote"];
+                NSString *string = [NSString stringWithFormat:@"http://123.125.104.152/card/vote"];
                 NSURL *url = [NSURL URLWithString:string];
                 ASIFormDataRequest *request = [[[ASIFormDataRequest alloc] initWithURL:url] autorelease];
                 [request setPostValue:@"Where" forKey:@"card"];
@@ -193,6 +195,18 @@ NSString *kCardTypeShop = @"cardShop";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 60;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([self.cardType isEqualToString:kCardTypeShop]) {
+        
+        CardViewCellShop *cell = (CardViewCellShop *)[tableView cellForRowAtIndexPath:indexPath];
+        
+        NSString *message = [NSString stringWithFormat:@"\n%@\n\n已添加到购物车", cell.nameLabel.text];
+        UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"知道了！" otherButtonTitles: nil];
+        [alter show];
+    }
 }
 
 #pragma mark - ASIHTTPRequestDelegate

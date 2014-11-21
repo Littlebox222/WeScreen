@@ -119,6 +119,7 @@
             if (self.likeButton == nil) {
                 self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
                 UIImage *likeImage = [UIImage imageNamed:@"like.png"];
+                likeImage = [UIImage imageWithCGImage:[likeImage CGImage] scale:1.7 orientation:UIImageOrientationUp];
                 [self.likeButton setImage:likeImage forState:UIControlStateNormal];
                 [self.likeButton setBackgroundColor:[UIColor clearColor]];
                 [self.likeButton addTarget:self action:@selector(like:) forControlEvents:UIControlEventTouchUpInside];
@@ -127,9 +128,10 @@
                 [self.likeButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
                 [self.contentView addSubview:self.likeButton];
                 
+                [self.likeButton setContentMode:UIViewContentModeCenter];
                 self.likeButton.frame = cellFrame.likeRect;
-                [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(7, -20, 0, 0)];
-                [self.likeButton setImageEdgeInsets:UIEdgeInsetsMake(0, -7, 0, 33)];
+                [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(7, -20, 0, -33)];
+                //[self.likeButton setImageEdgeInsets:UIEdgeInsetsMake(0, -7, 0, 33)];
                 
                 if (chartMessage.likeNum != 0) {
                     [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", chartMessage.likeNum] forState:UIControlStateNormal];
@@ -138,18 +140,18 @@
             }else {
                 
                 self.likeButton.frame = cellFrame.likeRect;
-                [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(7, -20, 0, 0)];
-                [self.likeButton setImageEdgeInsets:UIEdgeInsetsMake(0, -7, 0, 33)];
+                [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(7, -20, 0, -33)];
+                //[self.likeButton setImageEdgeInsets:UIEdgeInsetsMake(0, -7, 0, 33)];
                 if (chartMessage.likeNum != 0) {
                     [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", chartMessage.likeNum] forState:UIControlStateNormal];
                 }
                 
                 [self.likeButton setAlpha:1];
                 
-                if (![self.likeButton isUserInteractionEnabled]) {
-                    UIImage *likeImage = [UIImage imageNamed:@"like_highlighted.png"];
-                    [self.likeButton setImage:likeImage forState:UIControlStateNormal];
-                }
+//                if (![self.likeButton isUserInteractionEnabled]) {
+//                    UIImage *likeImage = [UIImage imageNamed:@"like_highlighted.png"];
+//                    [self.likeButton setImage:likeImage forState:UIControlStateNormal];
+//                }
             }
             [self.userNameLabel setAlpha:1];
             
@@ -159,13 +161,18 @@
                 
                 self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
                 UIImage *likeImage = [UIImage imageNamed:@"like.png"];
+                likeImage = [UIImage imageWithCGImage:[likeImage CGImage] scale:1.7 orientation:UIImageOrientationUp];
                 [self.likeButton setImage:likeImage forState:UIControlStateNormal];
                 [self.likeButton setBackgroundColor:[UIColor clearColor]];
                 [self.likeButton addTarget:self action:@selector(like:) forControlEvents:UIControlEventTouchUpInside];
-                [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", [chartMessage likeNum]] forState:UIControlStateNormal];
+                [self.likeButton setTitle:[NSString stringWithFormat:@""] forState:UIControlStateNormal];
                 [self.likeButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
                 [self.likeButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
                 [self.contentView addSubview:self.likeButton];
+                
+                if (chartMessage.likeNum != 0) {
+                    [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", chartMessage.likeNum] forState:UIControlStateNormal];
+                }
                 
                 self.likeButton.frame = CGRectZero;
                 [self.likeButton setAlpha:0];
@@ -285,7 +292,8 @@
 
 - (void)like:(id)sender {
     
-    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/like?uid=%@&cid=%@", kCurrentUserID, self.chartView.chartMessage.mid];
+//    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/like?uid=%@&cid=%@", kCurrentUserID, self.chartView.chartMessage.mid];
+    NSString *string = [NSString stringWithFormat:@"http://123.125.104.152/comments/like?uid=%@&cid=%@", kCurrentUserID, self.chartView.chartMessage.mid];
     NSURL *url = [NSURL URLWithString:string];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setRequestMethod:@"GET"];
@@ -307,6 +315,7 @@
     if ([[json objectForKey:@"count"] integerValue] != -1) {
         
         UIImage *likeImage = [UIImage imageNamed:@"like_highlighted.png"];
+        likeImage = [UIImage imageWithCGImage:[likeImage CGImage] scale:1.7 orientation:UIImageOrientationUp];
         [self.likeButton setImage:likeImage forState:UIControlStateNormal];
         [self.likeButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
         [self.likeButton setTitle:[[json objectForKey:@"count"] stringValue] forState:UIControlStateNormal];

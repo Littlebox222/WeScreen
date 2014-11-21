@@ -19,7 +19,7 @@
 #import "ASIFormDataRequest.h"
 
 #define kMaxRadius 160
-#define kMaxDuration 30
+#define kMaxDuration 300
 
 @interface RootViewController ()<ASIHTTPRequestDelegate> {
     AVAudioRecorder *recorder;
@@ -81,11 +81,18 @@
     self.arcLayer = [CAShapeLayer layer];
     self.arcLayer.path = path.CGPath;
     self.arcLayer.fillColor = [UIColor colorWithRed:46.0/255.0 green:169.0/255.0 blue:230.0/255.0 alpha:1].CGColor;
-    self.arcLayer.strokeColor = [UIColor colorWithRed:1.0f green:0.7f blue:0.2f alpha:1.0f].CGColor;
-    self.arcLayer.lineWidth = 6;
+    self.arcLayer.strokeColor = [UIColor clearColor].CGColor;//[UIColor colorWithRed:1.0f green:0.7f blue:0.2f alpha:1.0f].CGColor;
+    self.arcLayer.lineWidth = 0;
     self.arcLayer.frame = self.view.frame;
     [self.view.layer addSublayer:self.arcLayer];
     [self drawLineAnimation:self.arcLayer];
+    
+
+    UILabel *label = [[[UILabel alloc] initWithFrame:CGRectMake(rect.size.width/2-30, rect.size.height/2-37, 80, 40)] autorelease];
+    label.text = @"WeTV";
+    label.textColor = [UIColor whiteColor];
+    label.font = [UIFont boldSystemFontOfSize:24];
+    [self.view addSubview:label];
     
     [self recordAgain];
     
@@ -115,7 +122,8 @@
             
             //TODO:上传音频
             
-            NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/topic/rec"];
+//            NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/topic/rec"];
+            NSString *string = [NSString stringWithFormat:@"http://123.125.104.152/topic/rec"];
             NSURL *url = [NSURL URLWithString:string];
             ASIFormDataRequest *request = [[[ASIFormDataRequest alloc] initWithURL:url] autorelease];
             [request setFile: [NSString stringWithFormat:@"%@", self.voice.recordPath] forKey:@"audio"];
@@ -180,22 +188,23 @@
     double time = 0;
     
     if (json) {
-        //topic = @"爸爸去哪儿-1";
         topic = [json objectForKey:@"topic"];
         time = [[json objectForKey:@"time"] doubleValue];
+        
         self.prob = [[json objectForKey:@"score"] doubleValue];
+        NSLog(@"\n*********** %@ \n~~~~~~~~~~~ %f \n=========== %f", topic, time, self.prob);
     }
     
-    if (self.prob) {
+    if (self.prob > 0.15) {
         [self showViewWithTopic:topic];
     }else {
         
-        if (self.baseTime > kMaxDuration - 5) {
-            self.baseTime = 0;
-            self.prob = 0;
-        }else {
+//        if (self.baseTime > kMaxDuration - 5) {
+//            self.baseTime = 0;
+//            self.prob = 0;
+//        }else {
             [self recordAgain];
-        }
+//        }
     }
 }
 
@@ -204,14 +213,14 @@
     NSError *error = [request error];
     NSLog(@"%@", error);
     
-    if (self.baseTime > kMaxDuration - 5) {
-        
-        self.baseTime = 0;
-        self.prob = 0;
-        
-    }else {
+//    if (self.baseTime > kMaxDuration - 5) {
+//        
+//        self.baseTime = 0;
+//        self.prob = 0;
+//        
+//    }else {
         [self recordAgain];
-    }
+//    }
 }
 
 @end

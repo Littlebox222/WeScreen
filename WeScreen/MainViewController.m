@@ -58,6 +58,7 @@ static NSString *const cellIdentifier=@"QQChart";
 
 @property (strong, nonatomic) NSTimer *requestTimer;
 @property (strong, nonatomic) NSTimer *cardTimer;
+@property (strong, nonatomic) NSTimer *cardTimer2;
 @property (strong, nonatomic) NSString *lastMid;
 @property (strong, nonatomic) NSString *currentRtid;
 
@@ -82,6 +83,11 @@ static NSString *const cellIdentifier=@"QQChart";
     if (_cardTimer != nil) {
         [_cardTimer invalidate];
         _cardTimer = nil;
+    }
+    
+    if (_cardTimer2 != nil) {
+        [_cardTimer2 invalidate];
+        _cardTimer2 = nil;
     }
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -137,12 +143,20 @@ static NSString *const cellIdentifier=@"QQChart";
                                                    userInfo:nil
                                                     repeats:YES];
     
-    _cardTimer = [[NSTimer scheduledTimerWithTimeInterval:5.0
-                                                  target:self
-                                                selector:@selector(insertCard)
-                                                userInfo:nil
-                                                 repeats:NO] retain];
-    
+    if ([self.topic isEqualToString:@"爸爸去哪儿"]) {
+        
+        _cardTimer = [[NSTimer scheduledTimerWithTimeInterval:90.0
+                                                       target:self
+                                                     selector:@selector(insertCard)
+                                                     userInfo:nil
+                                                      repeats:NO] retain];
+        
+        _cardTimer2 = [[NSTimer scheduledTimerWithTimeInterval:150.0
+                                                        target:self
+                                                      selector:@selector(insertCard2)
+                                                      userInfo:nil
+                                                       repeats:NO] retain];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -166,12 +180,17 @@ static NSString *const cellIdentifier=@"QQChart";
         _cardTimer = nil;
     }
     
+    if( _cardTimer2 != nil && [_cardTimer2 isKindOfClass:[NSTimer class]] && [_cardTimer2 isValid]) {
+        [_cardTimer2 invalidate];
+        _cardTimer2 = nil;
+    }
+    
     [super viewWillDisappear:animated];
 }
 
 - (void)requestForListComments {
 
-    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/list?topic=%@&sinceId=%@&count=15", [self.topic urlencode], _lastMid];
+    NSString *string = [NSString stringWithFormat:@"http://123.125.104.152/comments/list?topic=%@&sinceId=%@&count=15", [self.topic urlencode], _lastMid];
     NSURL *url = [NSURL URLWithString:string];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setRequestMethod:@"GET"];
@@ -194,8 +213,30 @@ static NSString *const cellIdentifier=@"QQChart";
                            @"topic":@"aa",
                            @"like":@"0",
                            @"user":@{@"name":@"a",
-                                     //@"id":@(random() % 2),
                                      @"id":@0,
+                                     @"icon":@"",
+                                     @"icon_url":@""}};
+    
+    chartMessage.dict = [dict retain];
+    cellFrame.chartMessage = chartMessage;
+    [self.cellFrames addObject:cellFrame];
+    
+    [self.tableView reloadData];
+}
+
+- (void)insertCard2 {
+    
+    ChartCellFrame *cellFrame = [[[ChartCellFrame alloc] init] autorelease];
+    ChartMessage *chartMessage = [[[ChartMessage alloc] init] autorelease];
+    
+    
+    NSDictionary *dict = @{@"id":@0,
+                           @"create_time":@"123",
+                           @"content":@"ss",
+                           @"topic":@"aa",
+                           @"like":@"0",
+                           @"user":@{@"name":@"a",
+                                     @"id":@1,
                                      @"icon":@"",
                                      @"icon_url":@""}};
     
@@ -523,7 +564,8 @@ static NSString *const cellIdentifier=@"QQChart";
     self.keyBordView.textField.text = @"";
     [self.keyBordView changeToolView:0];
     
-    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/create"];
+//    NSString *string = [NSString stringWithFormat:@"http://10.75.2.56:8080/comments/create"];
+    NSString *string = [NSString stringWithFormat:@"http://123.125.104.152/comments/create"];
     NSURL *url = [NSURL URLWithString:string];
     ASIFormDataRequest *request = [[[ASIFormDataRequest alloc] initWithURL:url] autorelease];
     [request setPostValue:stringToSend forKey:@"content"];

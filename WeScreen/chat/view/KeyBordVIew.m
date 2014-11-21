@@ -20,7 +20,9 @@
 @property (nonatomic,strong) UIButton *speakBtn;
 @property (nonatomic,strong) UITextView *tipView;
 @property (nonatomic,strong) UIButton *sendBtn;
-@property (strong, nonatomic) ContentSizeBlock sizeBlock;
+@property (nonatomic,strong) ContentSizeBlock sizeBlock;
+@property (nonatomic,strong) NSTimer *updateTimer;
+@property (nonatomic,assign) int recordedTime;
 @end
 
 @implementation KeyBordVIew
@@ -28,6 +30,11 @@
 - (void)dealloc {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:nil];
+    
+    if (self.updateTimer != nil) {
+        [self.updateTimer invalidate];
+        self.updateTimer = nil;
+    }
     
     self.voiceBtn = nil;
     self.imageBtn = nil;
@@ -51,6 +58,8 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(keyPressed:) name: UITextViewTextDidChangeNotification object: nil];
         self.textField.scrollEnabled = NO;
+        
+        self.recordedTime = 0;
     }
     return self;
 }
@@ -67,35 +76,24 @@
 {
     //工具条
     [self setBackgroundColor:[UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1]];
-
-    //麦克风
-    UIImage *image = [UIImage imageNamed:@"chat_bottom_voice_nor.png"];
-    
-    image = [UIImage imageWithCGImage:[image CGImage] scale:1.7 orientation:UIImageOrientationUp];
-    
-//    CGRect rect = CGRectMake(0, 0, 27, 27);
-//    UIGraphicsBeginImageContext( rect.size );
-//    [image drawInRect:rect];
-//    UIImage *picture1 = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
-//    NSData *imageData = UIImagePNGRepresentation(picture1);
-//    UIImage *img=[UIImage imageWithData:imageData];
-    
-    self.voiceBtn = [[UIImageView alloc] initWithImage:image];
-//    self.voiceBtn.backgroundColor = [UIColor redColor];
-    [self.voiceBtn setContentMode:UIViewContentModeCenter];
-    [self.voiceBtn setUserInteractionEnabled:YES];
-
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
-    longPress.minimumPressDuration = 0.1;
-    [self.voiceBtn addGestureRecognizer:longPress];
-    [self addSubview:self.voiceBtn];
     
     //输入框
     self.textField = [[UIPlaceHolderTextView alloc] initWithFrame:CGRectZero];
     self.textField.placeholder = @"按住麦克风，语音输入文字";
     self.textField.delegate = self;
     [self addSubview:self.textField];
+    
+    //麦克风
+    UIImage *image = [UIImage imageNamed:@"chat_bottom_voice_nor.png"];
+    image = [UIImage imageWithCGImage:[image CGImage] scale:1.7 orientation:UIImageOrientationUp];
+    self.voiceBtn = [[UIImageView alloc] initWithImage:image];
+    [self.voiceBtn setContentMode:UIViewContentModeCenter];
+    [self.voiceBtn setUserInteractionEnabled:YES];
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
+    longPress.minimumPressDuration = 0.1;
+    [self.voiceBtn addGestureRecognizer:longPress];
+    [self addSubview:self.voiceBtn];
     
     //表情
     self.imageBtn=[self buttonWith:@"chat_bottom_smile_nor.png" hightLight:@"chat_bottom_smile_nor.png" action:@selector(imageBtnPress:)];
@@ -112,7 +110,7 @@
     [self.tipView setBackgroundColor:[UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1]];
     [self.tipView setHidden:YES];
     [self.tipView setTextAlignment:NSTextAlignmentCenter];
-    [self.tipView setText:@"向右滑动取消"];
+    [self.tipView setText:[NSString stringWithFormat:@"向右滑动取消              %ds", self.recordedTime]];
     [self.tipView setFont:[UIFont systemFontOfSize:18]];
     [self.tipView setTextColor:[UIColor grayColor]];
     [self addSubview:self.tipView];
@@ -131,7 +129,7 @@
 {
     //给voicebutton添加约束
     self.voiceBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    NSArray *voiceConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(-5)-[_voiceBtn(60)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
+    NSArray *voiceConstraintH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(-15)-[_voiceBtn(80)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
     [self addConstraints:voiceConstraintH];
     NSArray *voiceConstraintV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(-15)-[_voiceBtn(70)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_voiceBtn)];
     [self addConstraints:voiceConstraintV];
@@ -181,6 +179,7 @@
         [self.textField setHidden:YES];
         [self.sendBtn setHidden:YES];
         [self.tipView setHidden:NO];
+        [self.tipView setText:[NSString stringWithFormat:@"向右滑动取消              %ds", self.recordedTime]];
         
     }else if (state == 0) {
         
@@ -197,6 +196,7 @@
         
         [self.textField setHidden:NO];
         [self.tipView setHidden:YES];
+        [self.tipView setText:[NSString stringWithFormat:@"向右滑动取消              %ds", self.recordedTime]];
     }
 }
 
@@ -225,6 +225,17 @@
                 
                 AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
                 
+                if (self.updateTimer != nil) {
+                    [self.updateTimer invalidate];
+                    self.updateTimer = nil;
+                }
+                self.recordedTime = 0;
+                self.updateTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                                    target:self
+                                                                  selector:@selector(updateTipString)
+                                                                  userInfo:nil
+                                                                   repeats:YES];
+                
                 iTime = [[NSDate date] timeIntervalSince1970];
                 [self.delegate beginRecord];
                 
@@ -243,6 +254,12 @@
             if (piont.x < -20) {
                 
                 if (i == 1) {
+                    
+                    if (self.updateTimer != nil) {
+                        [self.updateTimer invalidate];
+                        self.updateTimer = nil;
+                        self.recordedTime = 0;
+                    }
                     
                     if (self.delegate && [self.delegate respondsToSelector:@selector(cancelRecord)]) {
                         [self.delegate cancelRecord];
@@ -263,11 +280,24 @@
                 
                 if (cTime - iTime > 1) {
                     
+                    if (self.updateTimer != nil) {
+                        [self.updateTimer invalidate];
+                        self.updateTimer = nil;
+                        self.recordedTime = 0;
+                    }
+                    
                     if (self.delegate && [self.delegate respondsToSelector:@selector(finishRecord)]) {
                         [self.delegate finishRecord];
                     }
                     
                 }else {
+                    
+                    if (self.updateTimer != nil) {
+                        [self.updateTimer invalidate];
+                        self.updateTimer = nil;
+                        self.recordedTime = 0;
+                    }
+                    
                     if (self.delegate && [self.delegate respondsToSelector:@selector(cancelRecord)]) {
                         [self.delegate cancelRecord];
                     }
@@ -408,6 +438,11 @@
 - (void)setContentSizeBlock:(ContentSizeBlock)block
 {
     self.sizeBlock = block;
+}
+
+- (void)updateTipString {
+    self.recordedTime++;
+    [self.tipView setText:[NSString stringWithFormat:@"向右滑动取消              %ds", self.recordedTime]];
 }
 
 @end

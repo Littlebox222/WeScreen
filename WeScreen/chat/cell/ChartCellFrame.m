@@ -40,10 +40,10 @@
         CGFloat nameWidth = 50;
         CGFloat nameHeight = 25;
         
-        CGFloat likeX = winSize.width - 40;
-        CGFloat likeY = iconY;
-        CGFloat likeWidth = 40;
-        CGFloat likeHeight = 15;
+        CGFloat likeX = winSize.width - 80;
+        CGFloat likeY = iconY-25;
+        CGFloat likeWidth = 80;
+        CGFloat likeHeight = 60;
         
         if(chartMessage.messageType == kMessageFrom){
             
