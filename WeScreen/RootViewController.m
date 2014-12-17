@@ -35,6 +35,8 @@
 @property (nonatomic, assign) double prob;
 @property (nonatomic, assign) int baseTime;
 @property (nonatomic, retain) ASIFormDataRequest *request;
+@property (nonatomic, retain) NSTimer *timer;
+
 @end
 
 @implementation RootViewController
@@ -69,7 +71,7 @@
     [self.view addSubview:adView];
     
     UIImageView *adView2 = [[[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 75, self.view.frame.size.width, 60)] autorelease];
-    adView2.image = [UIImage imageNamed:@"search_2.png"];
+    adView2.image = [UIImage imageNamed:@"search_3.png"];
     adView2.contentMode = UIViewContentModeScaleAspectFill;
     [self.view addSubview:adView2];
     
@@ -87,6 +89,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    
+    [self.navigationItem setHidesBackButton:YES animated:NO];
     
     canceled = NO;
     
@@ -116,11 +120,11 @@
     
     [self recordAgain];
     
-    [NSTimer scheduledTimerWithTimeInterval:1
-                                     target:self
-                                   selector:@selector(plusTimer)
-                                   userInfo:nil
-                                    repeats:YES];
+//    [NSTimer scheduledTimerWithTimeInterval:1
+//                                     target:self
+//                                   selector:@selector(plusTimer)
+//                                   userInfo:nil
+//                                    repeats:YES];
 }
 
 - (void)plusTimer {
@@ -170,11 +174,11 @@
     
     [self recordStart];
     
-    [NSTimer scheduledTimerWithTimeInterval:5
-                                     target:self
-                                   selector:@selector(recordEnd)
-                                   userInfo:nil
-                                    repeats:NO];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:5
+                                                  target:self
+                                                selector:@selector(recordEnd)
+                                                userInfo:nil
+                                                 repeats:NO];
 }
 
 - (void)drawLineAnimation:(CALayer*)layer
@@ -203,6 +207,11 @@
     
     [self.voice stopRecordWithCompletionBlock:^{
         
+        if (self.timer) {
+            [self.timer invalidate];
+            self.timer = nil;
+        }
+        
         if (self.request!=nil) {
             [_request cancel];
             [_request setDelegate:nil];
@@ -217,7 +226,7 @@
         [self.arcLayer removeFromSuperlayer];
         
         MainViewController *mainViewController = [[[MainViewController alloc] init] autorelease];
-        mainViewController.topic = @"爸爸去哪儿";
+        mainViewController.topic = @"新神雕侠侣";
         [self.navigationController pushViewController:mainViewController animated:YES];
     }];
 }
@@ -225,6 +234,11 @@
 - (void)button2Pressed:(UIButton *)button {
     
     [self.voice stopRecordWithCompletionBlock:^{
+        
+        if (self.timer) {
+            [self.timer invalidate];
+            self.timer = nil;
+        }
         
         if (self.request!=nil) {
             [_request cancel];

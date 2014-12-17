@@ -146,17 +146,26 @@ static NSString *const cellIdentifier=@"QQChart";
     
     if ([self.topic isEqualToString:@"爸爸去哪儿"]) {
         
-        _cardTimer = [[NSTimer scheduledTimerWithTimeInterval:90.0
+        _cardTimer = [[NSTimer scheduledTimerWithTimeInterval:3.0
                                                        target:self
                                                      selector:@selector(insertCard)
                                                      userInfo:nil
                                                       repeats:NO] retain];
         
-        _cardTimer2 = [[NSTimer scheduledTimerWithTimeInterval:150.0
+        _cardTimer2 = [[NSTimer scheduledTimerWithTimeInterval:60.0
                                                         target:self
                                                       selector:@selector(insertCard2)
                                                       userInfo:nil
                                                        repeats:NO] retain];
+    }
+    
+    if ([self.topic isEqualToString:@"新神雕侠侣"]) {
+        
+        _cardTimer = [[NSTimer scheduledTimerWithTimeInterval:30.0
+                                                       target:self
+                                                     selector:@selector(insertCard)
+                                                     userInfo:nil
+                                                      repeats:NO] retain];
     }
 }
 

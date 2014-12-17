@@ -48,8 +48,11 @@ NSString *kCardTypeShop = @"cardShop";
         if ([type isEqualToString:kCardTypeVote]) {
             
             self.cardType = kCardTypeVote;
-            self.tableView.frame = CGRectMake(0, 136, 300, 300);
-            self.adView.image = [UIImage imageNamed:@"vote_header.png"];
+//            self.tableView.frame = CGRectMake(0, 136, 300, 300);
+//            self.adView.image = [UIImage imageNamed:@"vote_header.png"];
+            self.tableView.frame = CGRectMake(0, 136, 300, 120);
+            self.adView.image = [UIImage imageNamed:@"vote_header_shendiao.jpg"];
+            [self.adView setLayoutMargins:UIEdgeInsetsMake(8, 8, 8, 8)];
             
         }else if ([type isEqualToString:kCardTypeShop]) {
             self.cardType = kCardTypeShop;
@@ -70,7 +73,8 @@ NSString *kCardTypeShop = @"cardShop";
     if (self.tableView) {
         
         if (self.cardType == kCardTypeVote) {
-            self.tableView.frame = CGRectMake(0, 136, 300, 300);
+//            self.tableView.frame = CGRectMake(0, 136, 300, 300);
+            self.tableView.frame = CGRectMake(0, 136, 300, 120);
         }else if (self.cardType == kCardTypeShop) {
             self.tableView.frame = CGRectMake(0, 136, 300, 120);
         }
@@ -81,7 +85,8 @@ NSString *kCardTypeShop = @"cardShop";
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.cardType isEqualToString:kCardTypeVote] ? 5 : 2;
+//    return [self.cardType isEqualToString:kCardTypeVote] ? 5 : 2;
+    return [self.cardType isEqualToString:kCardTypeVote] ? 2 : 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -123,7 +128,8 @@ NSString *kCardTypeShop = @"cardShop";
                 NSString *string = [NSString stringWithFormat:@"http://123.125.104.152/card/vote"];
                 NSURL *url = [NSURL URLWithString:string];
                 ASIFormDataRequest *request = [[[ASIFormDataRequest alloc] initWithURL:url] autorelease];
-                [request setPostValue:@"Where" forKey:@"card"];
+                //[request setPostValue:@"Where" forKey:@"card"];
+                [request setPostValue:@"ShenDiao" forKey:@"card"];
                 [request setPostValue:[NSString stringWithFormat:@"%ld", indexPath.row] forKey:@"item"];
                 request.delegate = self;
                 request.defaultResponseEncoding = NSUTF8StringEncoding;
@@ -133,26 +139,36 @@ NSString *kCardTypeShop = @"cardShop";
             }];
         }
         
+//        if (indexPath.row == 0) {
+//            cell.avaterImageView.image = [UIImage imageNamed:@"support_1.png"];
+//            cell.nameLabel.text = @"Joe";
+//            cell.detailLabel.text = @"曹格儿子曹三丰";
+//        }else if (indexPath.row == 1) {
+//            cell.avaterImageView.image = [UIImage imageNamed:@"support_2.png"];
+//            cell.nameLabel.text = @"杨阳洋";
+//            cell.detailLabel.text = @"杨威儿子";
+//        }else if (indexPath.row == 2) {
+//            cell.avaterImageView.image = [UIImage imageNamed:@"support_3.png"];
+//            cell.nameLabel.text = @"贝儿";
+//            cell.detailLabel.text = @"陆毅的女儿";
+//        }else if (indexPath.row == 3) {
+//            cell.avaterImageView.image = [UIImage imageNamed:@"support_4.png"];
+//            cell.nameLabel.text = @"Feynman";
+//            cell.detailLabel.text = @"吴镇宇儿子";
+//        }else if (indexPath.row == 4) {
+//            cell.avaterImageView.image = [UIImage imageNamed:@"support_5.jpg"];
+//            cell.nameLabel.text = @"多多";
+//            cell.detailLabel.text = @"黄磊的女儿";
+//        }
+        
         if (indexPath.row == 0) {
-            cell.avaterImageView.image = [UIImage imageNamed:@"support_1.png"];
-            cell.nameLabel.text = @"Joe";
-            cell.detailLabel.text = @"曹格儿子曹三丰";
+            cell.avaterImageView.image = [UIImage imageNamed:@"support_shendiao_1.jpg"];
+            cell.nameLabel.text = @"小杨过";
+            cell.detailLabel.text = @"吴磊饰演";
         }else if (indexPath.row == 1) {
-            cell.avaterImageView.image = [UIImage imageNamed:@"support_2.png"];
-            cell.nameLabel.text = @"杨阳洋";
-            cell.detailLabel.text = @"杨威儿子";
-        }else if (indexPath.row == 2) {
-            cell.avaterImageView.image = [UIImage imageNamed:@"support_3.png"];
-            cell.nameLabel.text = @"贝儿";
-            cell.detailLabel.text = @"陆毅的女儿";
-        }else if (indexPath.row == 3) {
-            cell.avaterImageView.image = [UIImage imageNamed:@"support_4.png"];
-            cell.nameLabel.text = @"Feynman";
-            cell.detailLabel.text = @"吴镇宇儿子";
-        }else if (indexPath.row == 4) {
-            cell.avaterImageView.image = [UIImage imageNamed:@"support_5.jpg"];
-            cell.nameLabel.text = @"多多";
-            cell.detailLabel.text = @"黄磊的女儿";
+            cell.avaterImageView.image = [UIImage imageNamed:@"support_shendiao_2.jpg"];
+            cell.nameLabel.text = @"成年杨过";
+            cell.detailLabel.text = @"陈晓饰演";
         }
         
         return cell;

@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "LoginViewController.h"
 #import "RootViewController.h"
 
 #import "iflyMSC/iflySetting.h"
@@ -40,12 +41,13 @@
     //所有服务启动前，需要确保执行createUtility
     [IFlySpeechUtility createUtility:initString];
     
-    RootViewController *rootViewController = [[[RootViewController alloc] init] autorelease];
-    UINavigationController *nc = [[[UINavigationController alloc] initWithRootViewController:rootViewController] autorelease];
+    LoginViewController *loginViewController = [[[LoginViewController alloc] init] autorelease];
+//    RootViewController *rootViewController = [[[RootViewController alloc] init] autorelease];
+    UINavigationController *nc = [[[UINavigationController alloc] initWithRootViewController:loginViewController] autorelease];
     self.window.rootViewController = nc;
     [self.window makeKeyAndVisible];
     
-    self.uid = [NSString stringWithFormat:kUser1];
+    //self.uid = [NSString stringWithFormat:kUser6];
     
     return YES;
 }

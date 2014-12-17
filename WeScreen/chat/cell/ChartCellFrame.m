@@ -19,7 +19,8 @@
     if (chartMessage.messageType == kMessageCardVote) {
         
         CGSize winSize = [UIScreen mainScreen].bounds.size;
-        self.chartViewRect = CGRectMake(winSize.width/2 - 150, 20, 300, 436);
+//        self.chartViewRect = CGRectMake(winSize.width/2 - 150, 20, 300, 436);
+        self.chartViewRect = CGRectMake(winSize.width/2 - 150, 20, 300, 256);
         
     }else if (chartMessage.messageType == kMessageCardShop) {
         
@@ -37,7 +38,7 @@
         
         CGFloat nameX = iconX + iconWidth + 5;
         CGFloat nameY = iconY-5;
-        CGFloat nameWidth = 50;
+        CGFloat nameWidth = 150;
         CGFloat nameHeight = 25;
         
         CGFloat likeX = winSize.width - 80;

@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WeScreen/chat/view/CardView.m"
-            timestampString = "437990392.050683"
+            timestampString = "440413044.446736"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
             landmarkName = "-setFrame:"
             landmarkType = "5">
          </BreakpointContent>
