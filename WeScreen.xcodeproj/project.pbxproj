@@ -125,6 +125,12 @@
 		50D87F451A1B2D1E0079F6C2 /* shop_cart.png in Resources */ = {isa = PBXBuildFile; fileRef = 50D87F421A1B2D1E0079F6C2 /* shop_cart.png */; };
 		50D87F491A1B2F140079F6C2 /* CardViewCellShop.m in Sources */ = {isa = PBXBuildFile; fileRef = 50D87F471A1B2F140079F6C2 /* CardViewCellShop.m */; };
 		50D87F4A1A1B2F140079F6C2 /* CardViewCellShop.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50D87F481A1B2F140079F6C2 /* CardViewCellShop.xib */; };
+		ADFAF5241A42C1230081240D /* 笨笨跳跳小白兔.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ADFAF51E1A42C1230081240D /* 笨笨跳跳小白兔.jpg */; };
+		ADFAF5251A42C1230081240D /* 箐公子.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ADFAF51F1A42C1230081240D /* 箐公子.jpg */; };
+		ADFAF5271A42C1230081240D /* Yes_MyLady_.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ADFAF5211A42C1230081240D /* Yes_MyLady_.jpg */; };
+		ADFAF5281A42C1230081240D /* 方块小鱼.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ADFAF5221A42C1230081240D /* 方块小鱼.jpg */; };
+		ADFAF5291A42C1230081240D /* sophia王亚.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ADFAF5231A42C1230081240D /* sophia王亚.jpg */; };
+		ADFAF52B1A42C2C30081240D /* 龍妹妹mua.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ADFAF52A1A42C2C30081240D /* 龍妹妹mua.jpg */; };
 		C1FFB66019FE3DF7008374D4 /* ThreadView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FFB65F19FE3DF7008374D4 /* ThreadView.m */; };
 		C1FFB66219FE3E54008374D4 /* ThreadView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C1FFB66119FE3E54008374D4 /* ThreadView.xib */; };
 		C1FFB66619FE471D008374D4 /* ThreadViewCellTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FFB66419FE471D008374D4 /* ThreadViewCellTableViewCell.m */; };
@@ -311,6 +317,12 @@
 		50D87F461A1B2F140079F6C2 /* CardViewCellShop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardViewCellShop.h; sourceTree = "<group>"; };
 		50D87F471A1B2F140079F6C2 /* CardViewCellShop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardViewCellShop.m; sourceTree = "<group>"; };
 		50D87F481A1B2F140079F6C2 /* CardViewCellShop.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CardViewCellShop.xib; sourceTree = "<group>"; };
+		ADFAF51E1A42C1230081240D /* 笨笨跳跳小白兔.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "笨笨跳跳小白兔.jpg"; sourceTree = "<group>"; };
+		ADFAF51F1A42C1230081240D /* 箐公子.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "箐公子.jpg"; sourceTree = "<group>"; };
+		ADFAF5211A42C1230081240D /* Yes_MyLady_.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Yes_MyLady_.jpg; sourceTree = "<group>"; };
+		ADFAF5221A42C1230081240D /* 方块小鱼.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "方块小鱼.jpg"; sourceTree = "<group>"; };
+		ADFAF5231A42C1230081240D /* sophia王亚.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "sophia王亚.jpg"; sourceTree = "<group>"; };
+		ADFAF52A1A42C2C30081240D /* 龍妹妹mua.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "龍妹妹mua.jpg"; sourceTree = "<group>"; };
 		C1FFB65E19FE3DF6008374D4 /* ThreadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadView.h; sourceTree = "<group>"; };
 		C1FFB65F19FE3DF7008374D4 /* ThreadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadView.m; sourceTree = "<group>"; };
 		C1FFB66119FE3E54008374D4 /* ThreadView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreadView.xib; sourceTree = "<group>"; };
@@ -488,6 +500,12 @@
 			isa = PBXGroup;
 			children = (
 				50D4F7831A3FEC530071BB3E /* chenxiang.jpg */,
+				ADFAF51E1A42C1230081240D /* 笨笨跳跳小白兔.jpg */,
+				ADFAF51F1A42C1230081240D /* 箐公子.jpg */,
+				ADFAF52A1A42C2C30081240D /* 龍妹妹mua.jpg */,
+				ADFAF5211A42C1230081240D /* Yes_MyLady_.jpg */,
+				ADFAF5221A42C1230081240D /* 方块小鱼.jpg */,
+				ADFAF5231A42C1230081240D /* sophia王亚.jpg */,
 				50D4F7871A4025FE0071BB3E /* support_shendiao_1.jpg */,
 				50D4F7881A4025FE0071BB3E /* support_shendiao_2.jpg */,
 				50D4F7981A417BC00071BB3E /* support_shendiao_1.png */,
@@ -798,11 +816,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				5083330919E8E482005D97A7 /* like_highlighted.png in Resources */,
+				ADFAF5271A42C1230081240D /* Yes_MyLady_.jpg in Resources */,
 				500E8B5719DEF665000A7DCC /* toolbar_bottom_bar.png in Resources */,
 				5083330C19E8EEA6005D97A7 /* navigationbar_rightbutton.png in Resources */,
 				5083332A19E95692005D97A7 /* chat_bottom_up_nor.png in Resources */,
 				50D87E8F1A12253A0079F6C2 /* wangxin.jpg in Resources */,
 				50D87F441A1B2D1E0079F6C2 /* shop_1.png in Resources */,
+				ADFAF5251A42C1230081240D /* 箐公子.jpg in Resources */,
 				50D87F331A19D6960079F6C2 /* CardViewCell.xib in Resources */,
 				50D4F7861A400EA90071BB3E /* search_3.png in Resources */,
 				500E8B4C19DEF665000A7DCC /* chat_bottom_textfield.png in Resources */,
@@ -817,6 +837,7 @@
 				508FCA0C19EAFB0100D02AC4 /* timeline_tracker.png in Resources */,
 				500E8B4B19DEF665000A7DCC /* chat_bottom_smile_press.png in Resources */,
 				5083330519E8403C005D97A7 /* chatfrom_bg_normal@2x.png in Resources */,
+				ADFAF5291A42C1230081240D /* sophia王亚.jpg in Resources */,
 				50D87F431A1B2D1E0079F6C2 /* shop_2.png in Resources */,
 				50D87F381A19D8E10079F6C2 /* support_3.png in Resources */,
 				508FCA0B19EAFB0100D02AC4 /* timeline_process.png in Resources */,
@@ -828,6 +849,7 @@
 				50D87F391A19D8E10079F6C2 /* support_2.png in Resources */,
 				500E8B4E19DEF665000A7DCC /* chat_bottom_up_press.png in Resources */,
 				500E8B5019DEF665000A7DCC /* chat_bottom_voice_press.png in Resources */,
+				ADFAF5281A42C1230081240D /* 方块小鱼.jpg in Resources */,
 				50D87F3B1A19D8E10079F6C2 /* support_4.png in Resources */,
 				5083332819E95621005D97A7 /* chat_bottom_smile_nor.png in Resources */,
 				50D87F451A1B2D1E0079F6C2 /* shop_cart.png in Resources */,
@@ -853,8 +875,10 @@
 				500E8B4719DEF665000A7DCC /* chat_bg_default.jpg in Resources */,
 				50D87F4A1A1B2F140079F6C2 /* CardViewCellShop.xib in Resources */,
 				5083331819E92408005D97A7 /* drop_button_up.png in Resources */,
+				ADFAF5241A42C1230081240D /* 笨笨跳跳小白兔.jpg in Resources */,
 				50D4F7941A4166170071BB3E /* Catherine_Ren.jpg in Resources */,
 				500E8AF919DEE4E0000A7DCC /* Images.xcassets in Resources */,
+				ADFAF52B1A42C2C30081240D /* 龍妹妹mua.jpg in Resources */,
 				500E8B4819DEF665000A7DCC /* chat_bottom_keyboard_nor.png in Resources */,
 				50D4F79D1A417BC00071BB3E /* vote_header_shendiao.png in Resources */,
 				5083330619E8403C005D97A7 /* chatto_bg_normal@2x.png in Resources */,

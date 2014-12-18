@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LoginViewController : UIViewController
+@interface LoginViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
+
+@property (retain, nonatomic) UITableView *tableView;
+@property (retain, nonatomic) NSArray *userArray;
+@property (retain, nonatomic) NSDictionary *userDict;
 
 @end

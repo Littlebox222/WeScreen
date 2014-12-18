@@ -15,83 +15,104 @@
 
 @implementation LoginViewController
 
+@synthesize tableView = _tableView;
+@synthesize userArray = _userArray;
+@synthesize userDict = _userDict;
+
+- (void)dealloc {
+    
+    [_userArray release];
+    [_userDict release];
+    
+    [_tableView setDelegate:nil];
+    [_tableView release];
+}
+
+- (id)init {
+    
+    self = [super init];
+    
+    if (self) {
+        
+        self.userArray = [[NSArray alloc] initWithObjects:
+                          @"陈翔家的小天",
+                          @"Catherine_Ren",
+                          @"菁菁无悔",
+                          @"fudanchen",
+                          @"雪之夏沫",
+                          @"xiaochuan",
+                          @"shenyong",
+                          @"kaixin",
+                          @"feifan",
+                          @"wangxin",
+                          @"笨笨跳跳小白兔",
+                          @"方块小鱼",
+                          @"箐公子",
+                          @"sophia王亚",
+                          @"Yes_MyLady_",
+                          @"龍妹妹mua",nil];
+        
+        self.userDict = [[NSDictionary alloc] initWithObjectsAndKeys:
+                         @"kUser1", @"3788782974795784",
+                         @"kUser2", @"3788785373937674",
+                         @"kUser3", @"3788788305756176",
+                         @"kUser4", @"3788788511277073",
+                         @"kUser5", @"3788788708409362",
+                         @"kUser6", @"3775796348452870",
+                         @"kUser7", @"3775796952432647",
+                         @"kUser8", @"3775797149564936",
+                         @"kUser9", @"3775797241839625",
+                         @"kUser10", @"3775805919854603",
+                         @"kUser11", @"3789159241613359",
+                         @"kUser12", @"3789159384219696",
+                         @"kUser13", @"3789159497465905",
+                         @"kUser14", @"3789159602323506",
+                         @"kUser15", @"3789159719764019",
+                         @"kUser16", @"3789161703669813", nil];
+    }
+    
+    return self;
+}
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     
     self.title = @"选择用户登录";
-    
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
-//    UIButton *button1 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    button1.frame = CGRectMake(20, 80, self.view.frame.size.width/1.5, 30);
-//    [button1 setTitle:@"User1: 陈翔家的小天" forState:UIControlStateNormal];
-//    [button1.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
-//    [button1 addTarget:self action:@selector(button1Pressed:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:button1];
     
-    
-    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    button2.frame = CGRectMake(20, 80*2, self.view.frame.size.width/1.5, 30);
-    [button2 setTitle:@"User2: Catherine_Ren" forState:UIControlStateNormal];
-    [button2.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
-    [button2 addTarget:self action:@selector(button2Pressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:button2];
-    
-//    UIButton *button3 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    button3.frame = CGRectMake(20, 80*3, self.view.frame.size.width/1.5, 30);
-//    [button3 setTitle:@"User3: 菁菁无悔" forState:UIControlStateNormal];
-//    [button3.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
-//    [button3 addTarget:self action:@selector(button3Pressed:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:button3];
-    
-//    UIButton *button4 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    button4.frame = CGRectMake(20, 80*4, self.view.frame.size.width/1.5, 30);
-//    [button4 setTitle:@"User4: fudanchen" forState:UIControlStateNormal];
-//    [button4.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
-//    [button4 addTarget:self action:@selector(button4Pressed:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:button4];
-
-//    UIButton *button5 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    button5.frame = CGRectMake(20, 80*5, self.view.frame.size.width/1.5, 30);
-//    [button5 setTitle:@"User5: 雪之夏沫" forState:UIControlStateNormal];
-//    [button5.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
-//    [button5 addTarget:self action:@selector(button5Pressed:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:button5];
+    self.tableView = [[[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain] autorelease];
+    [self.tableView setDelegate:self];
+    [self.tableView setDataSource:self];
+    [self.view addSubview:_tableView];
 }
 
-
-- (void)button1Pressed:(UIButton *)button {
-
-    kCurrentUserID = kUser1;
-    RootViewController *rootViewController = [[[RootViewController alloc] init] autorelease];
-    [self.navigationController pushViewController:rootViewController animated:YES];
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [self.userArray count];
 }
 
-- (void)button2Pressed:(UIButton *)button {
-    
-    kCurrentUserID = kUser2;
-    RootViewController *rootViewController = [[[RootViewController alloc] init] autorelease];
-    [self.navigationController pushViewController:rootViewController animated:YES];
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 60;
 }
 
-- (void)button3Pressed:(UIButton *)button {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     
-    kCurrentUserID = kUser3;
-    RootViewController *rootViewController = [[[RootViewController alloc] init] autorelease];
-    [self.navigationController pushViewController:rootViewController animated:YES];
+    if (cell == nil) {
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"] autorelease];
+    }
+    cell.textLabel.text = [self.userArray objectAtIndex:indexPath.row];
+    
+    return cell;
 }
 
-- (void)button4Pressed:(UIButton *)button {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    kCurrentUserID = kUser4;
-    RootViewController *rootViewController = [[[RootViewController alloc] init] autorelease];
-    [self.navigationController pushViewController:rootViewController animated:YES];
-}
-
-- (void)button5Pressed:(UIButton *)button {
-    
-    kCurrentUserID = kUser5;
+    NSString *user = [NSString stringWithFormat:@"kUser%lu", indexPath.row+1];
+    kCurrentUserID = [self.userDict objectForKey:user];
     RootViewController *rootViewController = [[[RootViewController alloc] init] autorelease];
     [self.navigationController pushViewController:rootViewController animated:YES];
 }
