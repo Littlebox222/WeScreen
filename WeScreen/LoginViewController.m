@@ -23,20 +23,20 @@
     
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
-    UIButton *button1 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    button1.frame = CGRectMake(20, 80, self.view.frame.size.width/1.5, 30);
-    [button1 setTitle:@"User1: 陈翔家的小天" forState:UIControlStateNormal];
-    [button1.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
-    [button1 addTarget:self action:@selector(button1Pressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:button1];
+//    UIButton *button1 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//    button1.frame = CGRectMake(20, 80, self.view.frame.size.width/1.5, 30);
+//    [button1 setTitle:@"User1: 陈翔家的小天" forState:UIControlStateNormal];
+//    [button1.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
+//    [button1 addTarget:self action:@selector(button1Pressed:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:button1];
     
     
-//    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    button2.frame = CGRectMake(20, 80*2, self.view.frame.size.width/1.5, 30);
-//    [button2 setTitle:@"User2: Catherine_Ren" forState:UIControlStateNormal];
-//    [button2.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
-//    [button2 addTarget:self action:@selector(button2Pressed:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:button2];
+    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    button2.frame = CGRectMake(20, 80*2, self.view.frame.size.width/1.5, 30);
+    [button2 setTitle:@"User2: Catherine_Ren" forState:UIControlStateNormal];
+    [button2.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
+    [button2 addTarget:self action:@selector(button2Pressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button2];
     
 //    UIButton *button3 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 //    button3.frame = CGRectMake(20, 80*3, self.view.frame.size.width/1.5, 30);

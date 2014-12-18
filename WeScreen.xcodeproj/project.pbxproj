@@ -83,6 +83,9 @@
 		50D4F7951A4166170071BB3E /* fudanchen.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50D4F7911A4166170071BB3E /* fudanchen.jpg */; };
 		50D4F7961A4166170071BB3E /* 菁菁无悔.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50D4F7921A4166170071BB3E /* 菁菁无悔.jpg */; };
 		50D4F7971A4166170071BB3E /* 雪之夏沫.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50D4F7931A4166170071BB3E /* 雪之夏沫.jpg */; };
+		50D4F79B1A417BC00071BB3E /* support_shendiao_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 50D4F7981A417BC00071BB3E /* support_shendiao_1.png */; };
+		50D4F79C1A417BC00071BB3E /* support_shendiao_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 50D4F7991A417BC00071BB3E /* support_shendiao_2.png */; };
+		50D4F79D1A417BC00071BB3E /* vote_header_shendiao.png in Resources */ = {isa = PBXBuildFile; fileRef = 50D4F79A1A417BC00071BB3E /* vote_header_shendiao.png */; };
 		50D87E871A11C5520079F6C2 /* PulsingLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 50D87E861A11C5520079F6C2 /* PulsingLayer.m */; };
 		50D87E8D1A12253A0079F6C2 /* xiaochuan.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50D87E881A12253A0079F6C2 /* xiaochuan.jpg */; };
 		50D87E8E1A12253A0079F6C2 /* kaixin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50D87E891A12253A0079F6C2 /* kaixin.jpg */; };
@@ -247,6 +250,9 @@
 		50D4F7911A4166170071BB3E /* fudanchen.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = fudanchen.jpg; sourceTree = "<group>"; };
 		50D4F7921A4166170071BB3E /* 菁菁无悔.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "菁菁无悔.jpg"; sourceTree = "<group>"; };
 		50D4F7931A4166170071BB3E /* 雪之夏沫.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "雪之夏沫.jpg"; sourceTree = "<group>"; };
+		50D4F7981A417BC00071BB3E /* support_shendiao_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = support_shendiao_1.png; sourceTree = "<group>"; };
+		50D4F7991A417BC00071BB3E /* support_shendiao_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = support_shendiao_2.png; sourceTree = "<group>"; };
+		50D4F79A1A417BC00071BB3E /* vote_header_shendiao.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vote_header_shendiao.png; sourceTree = "<group>"; };
 		50D87E851A11C5520079F6C2 /* PulsingLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PulsingLayer.h; sourceTree = "<group>"; };
 		50D87E861A11C5520079F6C2 /* PulsingLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PulsingLayer.m; sourceTree = "<group>"; };
 		50D87E881A12253A0079F6C2 /* xiaochuan.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = xiaochuan.jpg; sourceTree = "<group>"; };
@@ -484,6 +490,9 @@
 				50D4F7831A3FEC530071BB3E /* chenxiang.jpg */,
 				50D4F7871A4025FE0071BB3E /* support_shendiao_1.jpg */,
 				50D4F7881A4025FE0071BB3E /* support_shendiao_2.jpg */,
+				50D4F7981A417BC00071BB3E /* support_shendiao_1.png */,
+				50D4F7991A417BC00071BB3E /* support_shendiao_2.png */,
+				50D4F79A1A417BC00071BB3E /* vote_header_shendiao.png */,
 				50D4F78B1A4027370071BB3E /* vote_header_shendiao.jpg */,
 				50D87F401A1B2D1E0079F6C2 /* shop_2.png */,
 				50D87F411A1B2D1E0079F6C2 /* shop_1.png */,
@@ -836,8 +845,10 @@
 				500E8AFC19DEE4E0000A7DCC /* LaunchScreen.xib in Resources */,
 				50D4F7961A4166170071BB3E /* 菁菁无悔.jpg in Resources */,
 				50D87F141A123AFF0079F6C2 /* README-GHUnit in Resources */,
+				50D4F79B1A417BC00071BB3E /* support_shendiao_1.png in Resources */,
 				5083332619E955C0005D97A7 /* chat_bottom_textfield.png in Resources */,
 				50D87F2C1A19B4F40079F6C2 /* vote_header.png in Resources */,
+				50D4F79C1A417BC00071BB3E /* support_shendiao_2.png in Resources */,
 				5083331719E92408005D97A7 /* drop_button_down.png in Resources */,
 				500E8B4719DEF665000A7DCC /* chat_bg_default.jpg in Resources */,
 				50D87F4A1A1B2F140079F6C2 /* CardViewCellShop.xib in Resources */,
@@ -845,6 +856,7 @@
 				50D4F7941A4166170071BB3E /* Catherine_Ren.jpg in Resources */,
 				500E8AF919DEE4E0000A7DCC /* Images.xcassets in Resources */,
 				500E8B4819DEF665000A7DCC /* chat_bottom_keyboard_nor.png in Resources */,
+				50D4F79D1A417BC00071BB3E /* vote_header_shendiao.png in Resources */,
 				5083330619E8403C005D97A7 /* chatto_bg_normal@2x.png in Resources */,
 				500E8B6519DEFE41000A7DCC /* messages.plist in Resources */,
 				500E8B4D19DEF665000A7DCC /* chat_bottom_up_nor.png in Resources */,
@@ -1037,7 +1049,7 @@
 					"$(PROJECT_DIR)/lib",
 				);
 				INFOPLIST_FILE = WeScreen/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "c2961401-f636-406e-baf2-e510cacff0b0";
@@ -1055,7 +1067,7 @@
 					"$(PROJECT_DIR)/lib",
 				);
 				INFOPLIST_FILE = WeScreen/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "c2961401-f636-406e-baf2-e510cacff0b0";

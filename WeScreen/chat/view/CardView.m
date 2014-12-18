@@ -51,7 +51,7 @@ NSString *kCardTypeShop = @"cardShop";
 //            self.tableView.frame = CGRectMake(0, 136, 300, 300);
 //            self.adView.image = [UIImage imageNamed:@"vote_header.png"];
             self.tableView.frame = CGRectMake(0, 136, 300, 120);
-            self.adView.image = [UIImage imageNamed:@"vote_header_shendiao.jpg"];
+            self.adView.image = [UIImage imageNamed:@"vote_header_shendiao.png"];
             [self.adView setLayoutMargins:UIEdgeInsetsMake(8, 8, 8, 8)];
             
         }else if ([type isEqualToString:kCardTypeShop]) {
@@ -162,11 +162,11 @@ NSString *kCardTypeShop = @"cardShop";
 //        }
         
         if (indexPath.row == 0) {
-            cell.avaterImageView.image = [UIImage imageNamed:@"support_shendiao_1.jpg"];
+            cell.avaterImageView.image = [UIImage imageNamed:@"support_shendiao_1.png"];
             cell.nameLabel.text = @"小杨过";
             cell.detailLabel.text = @"吴磊饰演";
         }else if (indexPath.row == 1) {
-            cell.avaterImageView.image = [UIImage imageNamed:@"support_shendiao_2.jpg"];
+            cell.avaterImageView.image = [UIImage imageNamed:@"support_shendiao_2.png"];
             cell.nameLabel.text = @"成年杨过";
             cell.detailLabel.text = @"陈晓饰演";
         }

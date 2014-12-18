@@ -161,11 +161,11 @@ static NSString *const cellIdentifier=@"QQChart";
     
     if ([self.topic isEqualToString:@"新神雕侠侣"]) {
         
-        _cardTimer = [[NSTimer scheduledTimerWithTimeInterval:30.0
-                                                       target:self
-                                                     selector:@selector(insertCard)
-                                                     userInfo:nil
-                                                      repeats:NO] retain];
+//        _cardTimer = [[NSTimer scheduledTimerWithTimeInterval:30.0
+//                                                       target:self
+//                                                     selector:@selector(insertCard)
+//                                                     userInfo:nil
+//                                                      repeats:NO] retain];
     }
 }
 
